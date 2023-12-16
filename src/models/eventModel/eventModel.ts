@@ -14,37 +14,48 @@ type comment = {
     user_image: string;
     user_name: string;
     comment: string;
-    comment_time: string;
+    comment_time: Date;
     comment_likes: number;
     comment_dislikes: number;
 }
 
-type report = {
+export type report = {
     name_of_reporter: string;
-    address_of_reporter: string;
-    report: string
+    email: string;
+    report: string;
+    phone_no: string;
 }
 
 type organizer = {
     id_of_organizer: string;
     name_of_organizer: string;
     image_of_organizer: string;
+}
 
-
+export enum eventType {
+        CONFERENCE = "conference",
+        WORKSHOP = "workshop",
+        SEMINAR = "seminar",
+        CONCERT = "concert",
+        PARTY = "party",
+        EXHIBITION = "exhibition",
+        OTHER = "other"
 }
 
 type event_registered_users = {
     id_of_user: string;
     name_of_user: string;
-    ticket_type: string;
+    ticket_types: [];
     no_of_tickets: number;
     total_amount_paid: number;
 }
 
 export interface EventAttributes {
+    [x: string]: any;
     id?: string;
     title?: string;
     type?: string;
+    event_image: string;
     description?: string;
     event_start_date: Date;
     event_end_date: Date;
@@ -64,7 +75,9 @@ export interface EventAttributes {
     updatedAt: Date
 }
 
-export class Event extends Model<EventAttributes> {}
+export class Event extends Model<EventAttributes> {
+    [x: string]: any;
+}
 
 Event.init({
      id: {
@@ -76,8 +89,12 @@ title: {
     type: DataTypes.STRING,
     allowNull: false,
 },
-type: {
+event_image: {
     type: DataTypes.STRING,
+    allowNull: false,
+},
+type: {
+    type: DataTypes.ENUM(...Object.values(eventType)),
     allowNull: false,
 },
 description: {
@@ -127,7 +144,7 @@ no_of_attendees:{
     type: DataTypes.INTEGER
 },
 organizers:{
-    type: DataTypes.STRING
+    type: DataTypes.JSON
 },
 createdAt: {
     type: DataTypes.DATE    

@@ -1,18 +1,16 @@
 import { DataTypes, Model } from "sequelize";
 import { database } from "../../configurations/index";
 
-
-
 export enum role {
-    ADMIN = "Admin",
-    USER = "User"
-  }
-
-  type report = {
-    name_of_reporter: string;
-    address_of_reporter: string;
-    report: string
+  ADMIN = "Admin",
+  USER = "User",
 }
+
+type report = {
+  name_of_reporter: string;
+  address_of_reporter: string;
+  report: string;
+};
 
 export interface UserAttributes {
   id?: string;
@@ -26,16 +24,18 @@ export interface UserAttributes {
   state: string;
   zip_code: string;
   password: string;
-  role: string
+  role: string;
+  is_completed_profile: boolean;
   isVerified: boolean;
   isBlocked: boolean;
-  reports: report[]
+  reports: report[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-
-export class User extends Model<UserAttributes> {}
+export class User extends Model<UserAttributes> {
+    [x: string]: any;
+}
 
 User.init(
   {
@@ -44,19 +44,24 @@ User.init(
       primaryKey: true,
       allowNull: false,
     },
+    is_completed_profile: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     phone_number: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
     },
     isVerified: {
-        type: DataTypes.BOOLEAN
+      type: DataTypes.BOOLEAN,
     },
     user_name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
 
     first_name: {
@@ -68,23 +73,23 @@ User.init(
       allowNull: false,
     },
     profile_picture: {
-        type: DataTypes.STRING
+      type: DataTypes.STRING,
     },
     state: {
-        type: DataTypes.STRING
+      type: DataTypes.STRING,
     },
     isBlocked: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     reports: {
-        type: DataTypes.JSON,
+      type: DataTypes.JSON,
     },
     zip_code: {
-        type: DataTypes.STRING
+      type: DataTypes.STRING,
     },
     address: {
-        type: DataTypes.STRING
+      type: DataTypes.STRING,
     },
     password: {
       type: DataTypes.STRING,
@@ -99,8 +104,8 @@ User.init(
       },
     },
     role: {
-        type: DataTypes.ENUM(...Object.values(role)),
-        allowNull: false
+      type: DataTypes.ENUM(...Object.values(role)),
+      allowNull: false,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -115,4 +120,4 @@ User.init(
   }
 );
 
-export default User
+export default User;
