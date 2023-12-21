@@ -5,6 +5,7 @@ interface Props {
   placeholder: string;
   text: string;
   h: string;
+  onChange: (selectedLocation: any) => void;
 }
 
 const Locations = (props: Props) => {
@@ -27,11 +28,18 @@ const Locations = (props: Props) => {
     { name: "Owerri", code: "OW" },
     { name: "Port Harcourt", code: "PH" },
   ];
+
+  const handleLocationChange = (e: DropdownChangeEvent) => {
+    setSelectedLocation(e.value);
+    props.onChange(e.value); // Call the parent onChange function with the selected location
+  };
+
+
   return (
     <div className="self-stretch rounded-[5px] justify-between items-center inline-flex">
       <Dropdown
         value={selectedLocation}
-        onChange={(e: DropdownChangeEvent) => setSelectedLocation(e.value)}
+        onChange={handleLocationChange}
         options={locations}
         optionLabel="name"
         placeholder={props.placeholder}

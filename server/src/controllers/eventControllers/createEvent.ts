@@ -31,7 +31,6 @@ export const createEvents = async (request: JwtPayload, response: Response) => {
       name_of_organizer: user.user_name,
       image_of_organizer: user.profile_picture,
     };
-
     let organizers = [userDetails]
     const createdEvent = await Event.create({
       ...request.body,
@@ -65,6 +64,7 @@ export const createEvents = async (request: JwtPayload, response: Response) => {
       data: foundEvent,
     });
   } catch (error: any) {
+    console.log(error.message)
     response.status(500).json({
       status: "error",
       message: "Event creation unsuccessful",

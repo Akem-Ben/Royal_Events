@@ -19,10 +19,10 @@ app.use(bodyParser.json())
 app.use(logger('dev'))
 app.use(express.json())
 app.use(cookieParser())
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: true}));
 app.use(cors())
-app.use('users', userRoutes)
-app.use('events', eventRoutes)
+app.use('/users', userRoutes)
+app.use('/events', eventRoutes)
 
 database.sync({}).then( ()=>{
     console.log("Database is connected");

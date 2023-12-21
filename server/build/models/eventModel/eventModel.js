@@ -1,8 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Event = void 0;
+exports.Event = exports.eventType = void 0;
 const sequelize_1 = require("sequelize");
 const index_1 = require("../../configurations/index");
+var eventType;
+(function (eventType) {
+    eventType["CONFERENCE"] = "conference";
+    eventType["WORKSHOP"] = "workshop";
+    eventType["SEMINAR"] = "seminar";
+    eventType["CONCERT"] = "concert";
+    eventType["PARTY"] = "party";
+    eventType["EXHIBITION"] = "exhibition";
+    eventType["OTHER"] = "other";
+})(eventType || (exports.eventType = eventType = {}));
 class Event extends sequelize_1.Model {
 }
 exports.Event = Event;
@@ -16,8 +26,12 @@ Event.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    type: {
+    event_image: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
+    type: {
+        type: sequelize_1.DataTypes.ENUM(...Object.values(eventType)),
         allowNull: false,
     },
     description: {
@@ -67,7 +81,7 @@ Event.init({
         type: sequelize_1.DataTypes.INTEGER
     },
     organizers: {
-        type: sequelize_1.DataTypes.STRING
+        type: sequelize_1.DataTypes.JSON
     },
     createdAt: {
         type: sequelize_1.DataTypes.DATE

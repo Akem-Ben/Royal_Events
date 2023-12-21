@@ -9,8 +9,42 @@ import Button from "../components/Button";
 import CalendarInput from "../components/calender";
 import CardContainer from "../components/CardContainer";
 import search from "../assets/search.svg";
+import axios from "../configurations/httpSetup";
+import { useState } from "react";
+import {showToast, showErrorToast, showSuccessToast} from '../utility/toast'
 
 export const LandingPage = () => {
+
+  const [filters, setFilters] = useState({
+    eventType: '',
+    location: '',
+    date: '',
+  });
+  console.log('fil',filters)
+  const handleSearch = async (event:any) => {
+    event.preventDefault();
+    try {
+      const response = await axios.get('/events/upcoming_events', {
+        params: {
+          eventType: filters.eventType,
+          location: filters.location,
+          date: filters.date,
+        },
+      });
+      setFilters(response.data.data)
+      showToast(response.data.message)
+    } catch (error:any) {
+      if (error.response) {
+        return showErrorToast(error.response.data.message);
+      }
+      if (error.request) {
+        return showErrorToast("Network Error");
+      }
+      if (error.message) {
+        return showErrorToast(error.message);
+      }
+    }
+  };
   return (
     <div className="flex flex-col justify-center min-h-screen w-full items-center">
       <nav className="w-full bg-gray-100 p-4 fixed top-0 z-40">
@@ -64,6 +98,7 @@ export const LandingPage = () => {
                 placeholder={"Choose event type"}
                 text={"text-green-500 text-xs"}
                 h={""}
+                onChange={(eventType) => setFilters({ ...filters, eventType })}
               />
             </div>
             <div className="mb-4 md:mb-0 md:w-1/3 cursor-pointer">
@@ -74,17 +109,21 @@ export const LandingPage = () => {
                 placeholder={"Choose location"}
                 text={"text-green-500 text-xs"}
                 h={""}
+                onChange={(location) => setFilters({ ...filters, location })}
               />
             </div>
             <div className="mb-4 md:mb-0 md:w-1/3">
               <p className="text-gray-50 text-base font-normal font-Product mb-2">
                 When
               </p>
-              <CalendarInput />
+              <CalendarInput 
+                onChange={(date) => setFilters({ ...filters, date })}
+              />
             </div>
             <button
               type="submit"
               className="p-2.5 bg-emerald-900 rounded-[5px] justify-center items-center hover:bg-emerald-700"
+              onClick={handleSearch}
             >
               <img src={`${search}`} style={{ alignItems: "center" }} />
             </button>
@@ -107,11 +146,13 @@ export const LandingPage = () => {
               placeholder={"Any category"}
               text={"text-grey-500 text-xs"}
               h={""}
+              onChange={(eventType) => setFilters({ ...filters, eventType })}
             />
             <Locations
               placeholder={"Choose location"}
               text={"text-grey text-xs"}
               h={""}
+              onChange={(location) => setFilters({ ...filters, location })}
             />
             <div className="h-10 px-4 py-2 bg-gray-50 rounded-[5px] justify-between items-center flex">
               <input
@@ -123,7 +164,7 @@ export const LandingPage = () => {
             </div>
           </div>
         </div>
-        <CardContainer />
+        <CardContainer filters={filters}/>
       </div>
       <div className="h-12 bg-green-500 rounded-md text-white mt-16 mb-8">
         <Button

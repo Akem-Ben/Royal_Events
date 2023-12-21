@@ -17,6 +17,11 @@ User.init({
         primaryKey: true,
         allowNull: false,
     },
+    is_completed_profile: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
     email: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
@@ -25,7 +30,7 @@ User.init({
         type: sequelize_1.DataTypes.STRING,
     },
     isVerified: {
-        type: sequelize_1.DataTypes.BOOLEAN
+        type: sequelize_1.DataTypes.BOOLEAN,
     },
     user_name: {
         type: sequelize_1.DataTypes.STRING,
@@ -40,10 +45,10 @@ User.init({
         allowNull: false,
     },
     profile_picture: {
-        type: sequelize_1.DataTypes.STRING
+        type: sequelize_1.DataTypes.STRING,
     },
     state: {
-        type: sequelize_1.DataTypes.STRING
+        type: sequelize_1.DataTypes.STRING,
     },
     isBlocked: {
         type: sequelize_1.DataTypes.BOOLEAN,
@@ -53,10 +58,10 @@ User.init({
         type: sequelize_1.DataTypes.JSON,
     },
     zip_code: {
-        type: sequelize_1.DataTypes.STRING
+        type: sequelize_1.DataTypes.STRING,
     },
     address: {
-        type: sequelize_1.DataTypes.STRING
+        type: sequelize_1.DataTypes.STRING,
     },
     password: {
         type: sequelize_1.DataTypes.STRING,
@@ -72,7 +77,7 @@ User.init({
     },
     role: {
         type: sequelize_1.DataTypes.ENUM(...Object.values(role)),
-        allowNull: false
+        allowNull: false,
     },
     createdAt: {
         type: sequelize_1.DataTypes.DATE,

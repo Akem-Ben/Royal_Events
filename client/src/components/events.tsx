@@ -5,6 +5,7 @@ interface Props {
   placeholder: string;
   text: string;
   h: string;
+  onChange: (selectedEvent: any) => void;
 }
 
 const Events = (props: Props) => {
@@ -34,12 +35,18 @@ const Events = (props: Props) => {
     { name: "Virtual", code: "VR" },
     { name: "Weddings", code: "FR" },
     { name: "Workshop", code: "WS" },
+    { name: "Other", code: "OTHER"}
   ];
+
+  const handleEventChange = (e: DropdownChangeEvent) => {
+    setSelectedEvent(e.value);
+    props.onChange(e.value); // Call the parent onChange function with the selected event
+  };
   return (
     <div className="self-stretch bg-gray-200 rounded-[5px] justify-between items-center inline-flex">
       <Dropdown
         value={selectedEvent}
-        onChange={(e: DropdownChangeEvent) => setSelectedEvent(e.value)}
+        onChange={handleEventChange}
         options={events}
         optionLabel="name"
         placeholder={props.placeholder}

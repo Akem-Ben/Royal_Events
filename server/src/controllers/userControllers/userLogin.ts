@@ -20,7 +20,6 @@ export const userLogin = async (request: Request, response: Response) => {
     const user = (await User.findOne({
       where: { email: email },
     })) as unknown as UserAttributes;
-console.log(user)
     if (!user) {
       return response.status(404).json({
         status: `Access denied`,
