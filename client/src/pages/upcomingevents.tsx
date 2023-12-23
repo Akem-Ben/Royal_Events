@@ -66,7 +66,7 @@ export const UpcomingEvents = () => {
                 }
                 />
                 <Card
-                image={"/images/event4.png"}
+                image={"/images/event4.jpeg"}
                 date={"25 of Dec, 2023"}
                 ticketsNo={0}
                 title={"Fitness Training"}
