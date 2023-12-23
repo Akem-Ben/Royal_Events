@@ -7,6 +7,8 @@ import { upload } from "../../utilities/upload";
 import { changePassword } from "../../controllers/userControllers/userChangePassword";
 import { updateProfile } from "../../controllers/userControllers/updateProfile";
 import { deleteProfileImage } from "../../controllers/userControllers/deleteProfilePic";
+import { resendVerification } from "../../controllers/userControllers/resendVerification";
+import { verifyUser } from "../../controllers/userControllers/verifyUser";
 
 const router = express.Router();
 
@@ -21,5 +23,6 @@ router.patch(
 router.patch("/change_password", generalAuthoriser, changePassword);
 router.patch("/update_profile", generalAuthoriser, updateProfile);
 router.delete("/delete_profile_image", generalAuthoriser, deleteProfileImage);
-
+router.post("/resend-verification", resendVerification);
+router.get("/verify/:token", verifyUser)
 export default router;

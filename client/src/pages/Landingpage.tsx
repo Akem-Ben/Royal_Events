@@ -20,7 +20,6 @@ export const LandingPage = () => {
     location: '',
     date: '',
   });
-  console.log('fil',filters)
   const handleSearch = async (event:any) => {
     event.preventDefault();
     try {

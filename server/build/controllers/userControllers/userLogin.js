@@ -25,11 +25,11 @@ const userLogin = async (request, response) => {
         if (!user) {
             return response.status(404).json({
                 status: `Access denied`,
-                message: `User with the email ${email} does not exist`,
+                message: `User with the email ${email} is not registered`,
             });
         }
         if (!user.isVerified) {
-            return response.status(400).json({
+            return response.status(401).json({
                 status: `error`,
                 message: `Only verified users can login, please check your email address ${user.email}, for a verification link sent to you.`
             });

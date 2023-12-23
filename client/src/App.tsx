@@ -14,8 +14,8 @@ function App() {
       <ToastContainer />
       <main>
         <Routes>
-          <Route path="/redirect" element={<Redirect />} />
-          <Route path="/modal" element={<Modal />} />
+          <Route path="/redirect/:token" element={<Redirect />} />
+          {/* <Route path="/modal" element={<Modal />} /> */}
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/upcomingevents" element={<UpcomingEvents />} />

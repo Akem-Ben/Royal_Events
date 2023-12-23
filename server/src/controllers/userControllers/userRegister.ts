@@ -29,7 +29,7 @@ export const registerUser = async (request: Request, response: Response) => {
     if (checkUserEmail) {
       return response.status(400).json({
         status: `error`,
-        message: `${email} already in use`,
+        message: `The email address ${email} already in use`,
       });
     }
 
@@ -38,7 +38,7 @@ export const registerUser = async (request: Request, response: Response) => {
     if (checkUserName) {
       return response.status(400).json({
         status: `error`,
-        message: `${user_name} already in use`,
+        message: `The username ${user_name} already in use`,
       });
     }
 

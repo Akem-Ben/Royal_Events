@@ -1,6 +1,27 @@
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { useEffect } from "react";
+import { verifyUser } from "../axiosSettings/axios";
+import { showSuccessToast } from "../utility/toast";
 
 export const Redirect = () => {
+  const { token } = useParams()
+  const navigate = useNavigate()
+  const fetchData = async () => {
+    try {
+      const data = await verifyUser(token)
+      showSuccessToast(data.data.message)
+      setTimeout(() => {
+        navigate('/signin')
+      }, 10000);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
+
+  useEffect(() => {
+  fetchData();
+}, []);
   return (
     <>
       <div className="flex flex-col justify-center min-h-screen w-full items-center">
@@ -23,7 +44,7 @@ export const Redirect = () => {
       <div className="fixed inset-0 flex items-center justify-center">
         <div className="bg-white p-8 rounded-lg">
           <p>
-            Verification Sucessfull <a href="signin">click here to login</a>
+            Verification Sucessfull, redirecting you to login page. If it delays, you can <a href="/signin">click here to go to login page</a>
           </p>
         </div>
       </div>

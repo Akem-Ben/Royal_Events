@@ -12,6 +12,8 @@ const upload_1 = require("../../utilities/upload");
 const userChangePassword_1 = require("../../controllers/userControllers/userChangePassword");
 const updateProfile_1 = require("../../controllers/userControllers/updateProfile");
 const deleteProfilePic_1 = require("../../controllers/userControllers/deleteProfilePic");
+const resendVerification_1 = require("../../controllers/userControllers/resendVerification");
+const verifyUser_1 = require("../../controllers/userControllers/verifyUser");
 const router = express_1.default.Router();
 router.post("/signup", userRegister_1.registerUser);
 router.post("/signin", userLogin_1.userLogin);
@@ -19,4 +21,6 @@ router.patch("/change_profile_picture", authorization_1.generalAuthoriser, uploa
 router.patch("/change_password", authorization_1.generalAuthoriser, userChangePassword_1.changePassword);
 router.patch("/update_profile", authorization_1.generalAuthoriser, updateProfile_1.updateProfile);
 router.delete("/delete_profile_image", authorization_1.generalAuthoriser, deleteProfilePic_1.deleteProfileImage);
+router.post("/resend-verification", resendVerification_1.resendVerification);
+router.get("/verify/:token", verifyUser_1.verifyUser);
 exports.default = router;

@@ -3,14 +3,17 @@ import Sidebar from "../components/Sidebar";
 import Card from "../components/Cards";
 
 export const UpcomingEvents = () => {
+    let user:any = localStorage.getItem("user")
+    let newUser = JSON.parse(user)
+    console.log(newUser)
     return (
         <>
             <div className="fixed">
                 <Sidebar />
             </div>
 
-            <div className="pl-[130px]">
-                <Navbar name={"SANDALILI"} image={"/images/event1.png"} />
+            <div className="pl-[100px]">
+                <Navbar name={`${newUser.first_name}`} image={ newUser.profile_picture.length === 0 ? "/images/event1.png" : newUser.profile_picture} />
             </div>
 
             <div className="pl-[160px] w-[1180px] mt-12 h-10 justify-between items-center inline-flex">
