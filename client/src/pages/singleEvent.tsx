@@ -54,11 +54,11 @@ function SingleEvent() {
       try{
         const response = await getSingleEvent(eventId)
         response.data.data.event_date = formatDate(response.data.data.event_date)
-        const test = response.data.data.comments
-        test.map((a:any)=> {
+        const event_comments = response.data.data.comments
+        event_comments.map((a:any)=> {
           a.comment_time = formatDateTime(a.comment_time)
         })
-        response.data.data.comments.length !== 0 ? setComments(test) : null
+        response.data.data.comments.length !== 0 ? setComments(event_comments) : null
         setEvent(response.data.data)
         return response.data.data
         }catch(error:any){
@@ -154,7 +154,9 @@ function SingleEvent() {
               description={event.description}
               time={event.event_time}
               organizerInfo={
-                event.organizers?.map((a:any)=> a.name_of_organizer)
+                // event.organizers?.map((a:any)=> a.name_of_organizer)
+                `${event.organizers[0].name_of_organizer}
+                 ${event.organizers[0].email}`
               }
             />
           </div>

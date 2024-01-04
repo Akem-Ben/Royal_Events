@@ -70,7 +70,6 @@ const ProfilePage = () => {
       const newImageData = new FormData();
       newImageData.append("profilePic", file);
       const response = await changeProfilePic(newImageData)
-      console.log('response', response)
       showSuccessToast(response.message)
       localStorage.setItem("user", JSON.stringify(response.data))
       fetchData()

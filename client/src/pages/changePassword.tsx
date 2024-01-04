@@ -38,7 +38,6 @@ export function ChangePassword() {
       e.preventDefault()
       setLoading(true)
       const response = await changePassword(formData)
-      console.log(response)
       if(response.status !== 200){
         setLoading(false)
         return showErrorToast(response.data.message)
