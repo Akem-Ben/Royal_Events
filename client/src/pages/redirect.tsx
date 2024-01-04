@@ -29,7 +29,7 @@ export const Redirect = () => {
           <div className="w-10/12 mx-auto flex items-center justify-between">
             <div className="text-center">
               <span className="text-gray-900 text-3xl font-normal font-Holtwood leading-14">
-                DECA
+                ROYAL
               </span>
               <span className="text-green-500 text-3xl font-normal font-Holtwood leading-14">
                 EVENTS

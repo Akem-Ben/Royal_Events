@@ -9,35 +9,35 @@ export const changePassword = async (
   response: Response
 ) => {
     try{
-        const {oldPassword, newPassword, confirm_password} = request.body;
+        const {old_password, new_password, confirm_password} = request.body;
         const userId = request.user.id;
         const user = await User.findOne({where: {id:userId}}) as unknown as UserAttributes
-        const validatePassword = await bcrypt.compare(oldPassword, user.password)
+        const validatePassword = await bcrypt.compare(old_password, user.password)
         if (!validatePassword) {
             return response.status(400).json({
               status: `error`,
               message: `Wrong Password`,
             });
           }
-          if(newPassword === oldPassword){
+          if(new_password === old_password){
             return response.status(400).json({
                 status: `error`,
                 message: `Cannot use previous password`,
               });
           }
-        if(newPassword !== confirm_password){
+        if(new_password !== confirm_password){
             return response.status(400).json({
                 status: `error`,
                 message: `Password Mismatch`,
               });
         }
-        if(newPassword.length < 6){
+        if(new_password.length < 6){
             return response.status(400).json({
                 status: `error`,
                 message: `Password must be at least six (6) characters long`
             })
         }
-        const hash = await hashPassword(newPassword)
+        const hash = await hashPassword(new_password)
 
         const updatedUser = await User.update({password:hash}, {where: {id:userId}})
 

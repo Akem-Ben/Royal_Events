@@ -5,13 +5,28 @@ const sequelize_1 = require("sequelize");
 const index_1 = require("../../configurations/index");
 var eventType;
 (function (eventType) {
-    eventType["CONFERENCE"] = "conference";
-    eventType["WORKSHOP"] = "workshop";
-    eventType["SEMINAR"] = "seminar";
-    eventType["CONCERT"] = "concert";
-    eventType["PARTY"] = "party";
-    eventType["EXHIBITION"] = "exhibition";
-    eventType["OTHER"] = "other";
+    eventType["BUSINESS"] = "Business";
+    eventType["CHARITY"] = "Charity";
+    eventType["COMMUNITY"] = "Community";
+    eventType["CONCERT"] = "Concert";
+    eventType["CONFERENCE"] = "Conference";
+    eventType["EXHIBITION"] = "Exhibition";
+    eventType["EXECUTIVE_MEETING"] = "Corporate off-sites & executive meeting";
+    eventType["FASHION_SHOW"] = "Fashion show and red carpet";
+    eventType["FESTIVAL"] = "Festival";
+    eventType["FUNDRAISING"] = "Fundraising";
+    eventType["HYBRID"] = "Hybrid";
+    eventType["NETWORKING"] = "Networking";
+    eventType["PRIVATE_PARTY"] = "Private Party";
+    eventType["PRODUCT_LAUNCH"] = "Product launch";
+    eventType["SEMINAR"] = "Seminar";
+    eventType["SPORTS_AND_COMPETITION"] = "Sports and competition";
+    eventType["TEAM_BUILDING"] = "Team building";
+    eventType["TRADE_SHOW"] = "Trade show";
+    eventType["VIRTUAL"] = "Virtual";
+    eventType["WEDDING"] = "Wedding";
+    eventType["WORKSHOP"] = "Workshop";
+    eventType["OTHER"] = "Other";
 })(eventType || (exports.eventType = eventType = {}));
 class Event extends sequelize_1.Model {
 }
@@ -38,11 +53,11 @@ Event.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    event_start_date: {
+    event_date: {
         type: sequelize_1.DataTypes.DATE
     },
-    event_end_date: {
-        type: sequelize_1.DataTypes.DATE
+    event_time: {
+        type: sequelize_1.DataTypes.STRING
     },
     ticket_types: {
         type: sequelize_1.DataTypes.JSON,

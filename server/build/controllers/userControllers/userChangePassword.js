@@ -9,35 +9,35 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const helpers_1 = require("../../helpers/helpers");
 const changePassword = async (request, response) => {
     try {
-        const { oldPassword, newPassword, confirm_password } = request.body;
+        const { old_password, new_password, confirm_password } = request.body;
         const userId = request.user.id;
         const user = await userModel_1.default.findOne({ where: { id: userId } });
-        const validatePassword = await bcryptjs_1.default.compare(oldPassword, user.password);
+        const validatePassword = await bcryptjs_1.default.compare(old_password, user.password);
         if (!validatePassword) {
             return response.status(400).json({
                 status: `error`,
                 message: `Wrong Password`,
             });
         }
-        if (newPassword === oldPassword) {
+        if (new_password === old_password) {
             return response.status(400).json({
                 status: `error`,
                 message: `Cannot use previous password`,
             });
         }
-        if (newPassword !== confirm_password) {
+        if (new_password !== confirm_password) {
             return response.status(400).json({
                 status: `error`,
                 message: `Password Mismatch`,
             });
         }
-        if (newPassword.length < 6) {
+        if (new_password.length < 6) {
             return response.status(400).json({
                 status: `error`,
                 message: `Password must be at least six (6) characters long`
             });
         }
-        const hash = await (0, helpers_1.hashPassword)(newPassword);
+        const hash = await (0, helpers_1.hashPassword)(new_password);
         const updatedUser = await userModel_1.default.update({ password: hash }, { where: { id: userId } });
         if (!updatedUser) {
             return response.status(400).json({

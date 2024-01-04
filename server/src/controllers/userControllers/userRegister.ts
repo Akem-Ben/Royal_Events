@@ -70,6 +70,7 @@ export const registerUser = async (request: Request, response: Response) => {
       profile_picture: "",
       address: "",
       state: "",
+      identity_document: "",
       zip_code: "",
       role: role.USER,
       is_completed_profile: false,

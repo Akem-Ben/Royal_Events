@@ -5,7 +5,6 @@ import Input from "../components/Input";
 import { useState } from "react";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
 import { loginUser, resendVerificationLink } from "../axiosSettings/axios";
-import Swal from "sweetalert2";
 import { Modal } from "../components/modal";
 
 export const SignIn = () => {
@@ -24,26 +23,20 @@ export const SignIn = () => {
       [name]: value
     })
   }
-const handleResendLink = async(e: React.FormEvent<HTMLFormElement>)=>{
+const handleResendLink = async()=>{
   try{
-    e.preventDefault()
     setLoading(true)
     const email = localStorage.getItem("email")
     const data = await resendVerificationLink({email: email})
     showSuccessToast(data.data.message)
     setLoading(false)
     return setShowModal(false);
-    // navigate('/signin')
-    // showToast(data.message)
   } catch (error: any) {
     if (error.response) {
-      // Server responded with a status code other than 2xx
       return showErrorToast(error.response.data.message);
     } else if (error.request) {
-      // The request was made but no response was received
       return showErrorToast('Network Error. Please try again later.');
     } else {
-      // Something happened in setting up the request
       return showErrorToast('Error occurred. Please try again.');
     }
   }
@@ -51,7 +44,7 @@ const handleResendLink = async(e: React.FormEvent<HTMLFormElement>)=>{
   const buttons:any = [
     {
       label: `${loading ? "Loading..." : "Resend Verification Link"}`,
-      onClick: handleResendLink,
+      onClick: ()=> handleResendLink(),
       bg: '#27AE60', // Replace with your desired color
       text: '#FFFFFF', // Replace with your desired color
     },
@@ -105,7 +98,7 @@ const handleResendLink = async(e: React.FormEvent<HTMLFormElement>)=>{
         <Link to={'/'} className="no-underline">
         <h1 className="text-center">
           <span className="text-black text-2xl font-normal font-Holtwood">
-            DECA
+            Royal
           </span>{" "}
           <span className="text-green-500 text-2xl font-normal font-Holtwood leading-[33.60px]">
             EVENTS
@@ -113,7 +106,7 @@ const handleResendLink = async(e: React.FormEvent<HTMLFormElement>)=>{
         </h1>
         </Link>
         <h2 className="text-center text-black text-[32px] font-medium font-Inter mb-8">
-          Sign In to Deca Event
+          Sign In to Royal Event
         </h2>
         <form className="flex flex-col w-3/4" onSubmit={handleLogin}>
           <Input
@@ -150,13 +143,12 @@ const handleResendLink = async(e: React.FormEvent<HTMLFormElement>)=>{
               Forgot your password?
             </a>
           </div>
-          <Button title={`${loading ? "Loading..." : "Signup"}`} text={"white"} bg={"#27AE60"} type={"submit"} />
+          <Button title={`${loading ? "Loading..." : "Login"}`} text={"white"} bg={"#27AE60"} type={"submit"} />
         </form>
       </div>
       {showModal && (
         <Modal onClose={() => setShowModal(false)} buttons={buttons}>
           <p className="text-center">Only verified users can login <br />please check your email address <span className="text-blue-600">{formData.email}</span>, <br /> and click on the verification link that was sent to you when you registered.</p>
-          {/* Additional modal content */}
         </Modal>
       )}
     </div>

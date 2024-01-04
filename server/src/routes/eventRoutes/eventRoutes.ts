@@ -11,12 +11,7 @@ import { dislikeEvent } from "../../controllers/eventControllers/dislikeEvent";
 
 const router = express.Router();
 
-router.post(
-  "/create",
-  generalAuthoriser,
-  upload.single("event_image"),
-  createEvents
-);
+router.post("/create", upload.single("event_image"), generalAuthoriser, createEvents);
 router.get("/upcoming_events", getUpcomingEvents);
 router.get("/get-single-event/:id", generalAuthoriser, getSingleEvent);
 router.get("/get-my-events", generalAuthoriser, userEvent);
@@ -25,5 +20,5 @@ router.post("/like/:id", generalAuthoriser, likeEvent);
 router.post("/dislike/:id", generalAuthoriser, dislikeEvent);
 
 export default router;
-
-//generalAuthoriser,
+// generalAuthoriser,
+//upload.single("event_image"),

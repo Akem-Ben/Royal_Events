@@ -14,7 +14,7 @@ const addComment_1 = require("../../controllers/eventControllers/addComment");
 const likeEvent_1 = require("../../controllers/eventControllers/likeEvent");
 const dislikeEvent_1 = require("../../controllers/eventControllers/dislikeEvent");
 const router = express_1.default.Router();
-router.post("/create", authorization_1.generalAuthoriser, upload_1.upload.single("event_image"), createEvent_1.createEvents);
+router.post("/create", upload_1.upload.single("event_image"), authorization_1.generalAuthoriser, createEvent_1.createEvents);
 router.get("/upcoming_events", getUpcomingEvents_1.getUpcomingEvents);
 router.get("/get-single-event/:id", authorization_1.generalAuthoriser, getSingleEvent_1.getSingleEvent);
 router.get("/get-my-events", authorization_1.generalAuthoriser, userEvent_1.userEvent);
@@ -22,4 +22,5 @@ router.post("/add-comment/:id", authorization_1.generalAuthoriser, addComment_1.
 router.post("/like/:id", authorization_1.generalAuthoriser, likeEvent_1.likeEvent);
 router.post("/dislike/:id", authorization_1.generalAuthoriser, dislikeEvent_1.dislikeEvent);
 exports.default = router;
-//generalAuthoriser,
+// generalAuthoriser,
+//upload.single("event_image"),

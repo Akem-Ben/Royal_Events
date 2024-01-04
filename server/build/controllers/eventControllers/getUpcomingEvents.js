@@ -11,11 +11,20 @@ const getUpcomingEvents = async (request, response) => {
     try {
         const presentDay = new Date();
         const { date, location, eventType } = request.query;
+        // let pre = new Date()
+        // console.log('pre', pre)
+        // let me = new Date(`${pre}`)
+        // console.log('me', me)
+        // // new Date('2023-12-28T20:19:07.255Z')
+        // let re = me.setUTCHours(0, 0, 0, 0)
+        // console.log('re', new Date(re))
+        let dateOne = new Date(`${date}`);
+        let dateUTC = dateOne.setUTCHours(0, 0, 0, 0);
+        let finalDate = new Date(dateUTC);
         let main_location = location;
         let main_event_type = eventType;
-        console.log(request.query);
         const whereClause = {
-            event_start_date: {
+            event_date: {
                 [sequelize_1.Op.gt]: presentDay,
             },
             isBlocked: false,
@@ -23,15 +32,13 @@ const getUpcomingEvents = async (request, response) => {
         if (date) {
             // const newDate = convertToISODateString(date as string);
             // console.log('date', newDate)
-            whereClause.event_start_date = {
-                [sequelize_1.Op.gt]: date,
-            };
+            whereClause.event_date = finalDate;
         }
         if (location) {
             whereClause.location = main_location.name;
         }
         if (eventType) {
-            whereClause.type = main_event_type.name.toLowerCase();
+            whereClause.type = main_event_type.name;
         }
         let getUpcomingEvents = await eventModel_1.default.findAll({ where: whereClause });
         if (getUpcomingEvents.length === 0) {
@@ -43,8 +50,8 @@ const getUpcomingEvents = async (request, response) => {
         getUpcomingEvents = getUpcomingEvents.map((event) => {
             return {
                 ...event,
-                event_start_date: (0, helpers_1.convertToDDMMYY)(event.event_start_date),
-                event_end_date: (0, helpers_1.convertToDDMMYY)(event.event_end_date),
+                event_date: (0, helpers_1.convertToDDMMYY)(event.event_date),
+                // event_end_date: convertToDDMMYY(event.event_end_date),
             };
         });
         return response.status(200).json({

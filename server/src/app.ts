@@ -14,17 +14,18 @@ import eventRoutes from './routes/eventRoutes/eventRoutes'
 const app = express()
 
 dotenv.config()
-app.use(bodyParser.json())
 
+app.use(bodyParser.json())
 app.use(logger('dev'))
 app.use(express.json())
 app.use(cookieParser())
-app.use(express.urlencoded({extended: true}));
-// app.use(cors())
-app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true, // if you're passing credentials (cookies, authorization headers, etc.)
-}));
+app.use(express.urlencoded({extended: false}));
+app.use(cors())
+// app.use(cors({
+//   origin: 'http://localhost:5173',
+//   credentials: true, // if you're passing credentials (cookies, authorization headers, etc.)
+// }));
+app.use(bodyParser.json())
 app.use('/users', userRoutes)
 app.use('/events', eventRoutes)
 

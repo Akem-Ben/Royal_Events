@@ -5,20 +5,17 @@ import User from "../../models/userModel/userModel";
 export const updateProfile = async (request: JwtPayload, response: Response) => {
   try {
     const userId = request.user.id;
-    const { firstName, lastName, email, phoneNumber, address, state, zipCode } =
+    const { identity_document, phone_number, address, state, zip_code } =
       request.body;
-
     const user = await User.findOne({ where: { id: userId } });
     if (user) {
       await User.update(
         {
-          first_name: firstName,
-          last_name: lastName,
-          email: email,
-          phone_number: phoneNumber,
+          phone_number: phone_number,
           address: address,
           state: state,
-          zip_code: zipCode,
+          zip_code: zip_code,
+          identity_document: request.file.path
         },
         { where: { id: userId } }
       );

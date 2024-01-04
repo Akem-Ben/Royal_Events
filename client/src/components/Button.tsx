@@ -5,7 +5,7 @@ interface Props {
   text?: string;
   bg?: string;
   type?: any;
-  onClick?: () => void; // Add onClick function type
+  onClick?: ()=>  any; // Add onClick function type
 }
 
 function Button(props: Props) {
@@ -22,7 +22,7 @@ function Button(props: Props) {
       style={buttonStyle}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={props.onClick} // Apply the provided onClick function
+      onClick={() => props.onClick && props.onClick()}// Apply the provided onClick function
     >
       {props.title}
     </button>

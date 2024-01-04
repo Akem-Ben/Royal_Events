@@ -9,7 +9,6 @@ type ticketType = {
     ticket_description: string;
     ticket_availability: boolean
 }
-
 type comment = {
     user_image: string;
     user_name: string;
@@ -30,17 +29,34 @@ type organizer = {
     id_of_organizer: string;
     name_of_organizer: string;
     image_of_organizer: string;
+    email_of_organiser: string;
+    username_of_oganiser: string;
 }
 
 export enum eventType {
-        CONFERENCE = "conference",
-        WORKSHOP = "workshop",
-        SEMINAR = "seminar",
-        CONCERT = "concert",
-        PARTY = "party",
-        EXHIBITION = "exhibition",
-        OTHER = "other"
-}
+    BUSINESS = "Business",
+    CHARITY = "Charity",
+    COMMUNITY = "Community",
+    CONCERT = "Concert",
+    CONFERENCE = "Conference",
+    EXHIBITION = "Exhibition",
+    EXECUTIVE_MEETING = "Corporate off-sites & executive meeting",
+    FASHION_SHOW = "Fashion show and red carpet",
+    FESTIVAL = "Festival",
+    FUNDRAISING = "Fundraising",
+    HYBRID = "Hybrid",
+    NETWORKING = "Networking",
+    PRIVATE_PARTY = "Private Party",
+    PRODUCT_LAUNCH = "Product launch",
+    SEMINAR = "Seminar",
+    SPORTS_AND_COMPETITION = "Sports and competition",
+    TEAM_BUILDING = "Team building",
+    TRADE_SHOW = "Trade show",
+    VIRTUAL = "Virtual",
+    WEDDING = "Wedding",
+    WORKSHOP = "Workshop",
+    OTHER = "Other",
+  }
 
 type event_registered_users = {
     id_of_user: string;
@@ -57,8 +73,8 @@ export interface EventAttributes {
     type?: string;
     event_image: string;
     description?: string;
-    event_start_date: Date;
-    event_end_date: Date;
+    event_date: Date;
+    event_time: string;
     location?: string;
     ticket_types: ticketType[]
     comments: comment[]
@@ -101,12 +117,12 @@ description: {
     type: DataTypes.STRING,
     allowNull: false,
 },
-event_start_date: {
+event_date: {
   type: DataTypes.DATE    
 },
-event_end_date: {
-    type: DataTypes.DATE  
-},
+event_time: {
+    type: DataTypes.STRING    
+  },
 ticket_types: {
     type: DataTypes.JSON,
     allowNull: false,

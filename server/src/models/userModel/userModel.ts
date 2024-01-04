@@ -25,6 +25,7 @@ export interface UserAttributes {
   zip_code: string;
   password: string;
   role: string;
+  identity_document: string;
   is_completed_profile: boolean;
   isVerified: boolean;
   isBlocked: boolean;
@@ -55,6 +56,9 @@ User.init(
     },
     phone_number: {
       type: DataTypes.STRING,
+    },
+    identity_document: {
+      type: DataTypes.STRING
     },
     isVerified: {
       type: DataTypes.BOOLEAN,

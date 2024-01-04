@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import { useState } from "react";
 import Button from "./Button";
+import { useNavigate, redirect } from "react-router-dom";
+import { showErrorToast } from "../utility/toast";
 
 interface Props {
   date: string;
@@ -7,10 +10,28 @@ interface Props {
   title: string;
   description: string;
   image: string;
+  id?:string
+  event_details?: any
 }
 
 function Card(props: Props) {
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate()
+const params = useLocation()
+  const handleEventPage = async(id:any, event_details:any)=>{
+    try{
+      const user = localStorage.getItem("user")
+      if(!user){
+        return showErrorToast("Only logged in users can view events")
+      }
+      localStorage.setItem("event_id", id)
+      localStorage.setItem("event", JSON.stringify(event_details))
+      localStorage.setItem("location", params.pathname)
+      return window.location.href = `/single-event/${id}`
+    }catch(error:any){
+      console.log(error)
+    }
+  }
 
   return (
     <div
@@ -105,6 +126,7 @@ function Card(props: Props) {
             text={"white"}
             bg={"#27AE60"}
             type={"submit"}
+            onClick={() => handleEventPage(props.id, props.event_details)}
           />
         </div>
       </div>

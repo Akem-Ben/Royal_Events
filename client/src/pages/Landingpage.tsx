@@ -51,7 +51,7 @@ export const LandingPage = () => {
           <div className="text-center">
             <Link to={"/"} className="no-underline">
               <span className="text-gray-900 text-3xl font-Holtwood leading-14">
-                DECA
+                ROYAL
               </span>
               <span className="text-green-500 text-3xl font-Holtwood leading-14">
                 EVENTS
@@ -178,7 +178,7 @@ export const LandingPage = () => {
 
       <footer className="h-80 w-full bg-green-500 items-center justify-center flex flex-col mt-16">
         <h1 className="font-Holtwood text-3xl font-normal text-white my-7">
-          <span className="text-white">DECA</span>
+          <span className="text-white">Royal</span>
           <span className="text-emerald-900">EVENTS</span>
         </h1>
         <form
@@ -221,7 +221,7 @@ export const LandingPage = () => {
             </a>
           </div>
           <p className="text-right text-white text-sm font-normal font-inter">
-            Non Copyrighted © 2023 Upload by Deca-Event
+            Non Copyrighted © 2023 Upload by Royal-Event
           </p>
         </div>
       </footer>

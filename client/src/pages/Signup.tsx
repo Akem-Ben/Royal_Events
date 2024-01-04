@@ -44,6 +44,7 @@ function SignUp() {
       const response = await registerUser(formData);
 
       if (response.status !== 200) {
+        setLoading(false)
         return showErrorToast(`${response.data.message}`);
       }
   
@@ -52,9 +53,9 @@ function SignUp() {
         position: "center",
         icon: "success",
         title: `Registration successfull, a link has been sent to your mail, click on it to verify your account before you login`,
-        showConfirmButton: false,
+        showConfirmButton: true,
         customClass: {
-          popup: 'w-[70%] text-s', // Apply Tailwind classes for width and font size
+          popup: 'w-[50%] text-[10px]',
         },
         timer: 8000,
       });
@@ -91,7 +92,7 @@ function SignUp() {
         <Link to={"/"} className="no-underline">
           <h1 className="text-center">
             <span className="text-black text-2xl font-normal font-Holtwood">
-              DECA
+              Royal
             </span>{" "}
             <span className="text-green-500 text-2xl font-normal font-Holtwood leading-[33.60px]">
               EVENTS
@@ -99,7 +100,7 @@ function SignUp() {
           </h1>
         </Link>
         <h2 className="text-center text-black text-[32px] font-medium font-Inter mb-8">
-          Sign Up to Deca Event
+          Sign Up to Royal Event
         </h2>
 
         <form className="flex flex-col w-3/4" onSubmit={handleSubmit}>

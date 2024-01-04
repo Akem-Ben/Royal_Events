@@ -8,12 +8,23 @@ export const getUpcomingEvents = async (request: Request, response: Response) =>
       const presentDay = new Date();
   
       const { date, location, eventType } = request.query;
+// let pre = new Date()
+// console.log('pre', pre)
+// let me = new Date(`${pre}`)
+// console.log('me', me)
+// // new Date('2023-12-28T20:19:07.255Z')
+// let re = me.setUTCHours(0, 0, 0, 0)
+// console.log('re', new Date(re))
+
+let dateOne = new Date(`${date}`)
+let dateUTC = dateOne.setUTCHours(0, 0, 0, 0)
+let finalDate = new Date(dateUTC)
 
       let main_location:any = location
       let main_event_type:any = eventType
-  console.log(request.query)
+
       const whereClause: any = {
-        event_start_date: {
+        event_date: {
           [Op.gt]: presentDay,
         },
         isBlocked: false,
@@ -22,9 +33,7 @@ export const getUpcomingEvents = async (request: Request, response: Response) =>
       if (date) {
         // const newDate = convertToISODateString(date as string);
         // console.log('date', newDate)
-        whereClause.event_start_date = {
-          [Op.gt]: date,
-        };
+        whereClause.event_date = finalDate
       }
   
       if (location) {
@@ -32,7 +41,7 @@ export const getUpcomingEvents = async (request: Request, response: Response) =>
       }
   
       if (eventType) {
-        whereClause.type = main_event_type.name.toLowerCase() as string;
+        whereClause.type = main_event_type.name as string;
       }
   
       let getUpcomingEvents: any = await Event.findAll({ where: whereClause });
@@ -42,13 +51,12 @@ export const getUpcomingEvents = async (request: Request, response: Response) =>
           message: `No Upcoming Events found`,
         });
       }
-  
       // Assuming you're converting dates to a specific format before sending the response
       getUpcomingEvents = getUpcomingEvents.map((event: any) => {
         return {
           ...event,
-          event_start_date: convertToDDMMYY(event.event_start_date),
-          event_end_date: convertToDDMMYY(event.event_end_date),
+          event_date: convertToDDMMYY(event.event_date),
+          // event_end_date: convertToDDMMYY(event.event_end_date),
         };
       });
 

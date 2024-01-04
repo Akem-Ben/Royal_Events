@@ -6,7 +6,6 @@ import User from '../../models/userModel/userModel';
 export const changeProfilePicture = async(request:JwtPayload, response:Response) => {
     try{
         const userId = request.user.id;
-        
         if(request.file === undefined){
             return response.status(404).json({
                 status: `error`,

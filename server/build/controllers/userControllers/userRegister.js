@@ -79,6 +79,7 @@ const registerUser = async (request, response) => {
             profile_picture: "",
             address: "",
             state: "",
+            identity_document: "",
             zip_code: "",
             role: userModel_1.role.USER,
             is_completed_profile: false,

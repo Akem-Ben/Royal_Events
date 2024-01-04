@@ -14,13 +14,15 @@ const updateProfile_1 = require("../../controllers/userControllers/updateProfile
 const deleteProfilePic_1 = require("../../controllers/userControllers/deleteProfilePic");
 const resendVerification_1 = require("../../controllers/userControllers/resendVerification");
 const verifyUser_1 = require("../../controllers/userControllers/verifyUser");
+const getUserProfile_1 = require("../../controllers/userControllers/getUserProfile");
 const router = express_1.default.Router();
 router.post("/signup", userRegister_1.registerUser);
 router.post("/signin", userLogin_1.userLogin);
 router.patch("/change_profile_picture", authorization_1.generalAuthoriser, upload_1.upload.single("profilePic"), changeProfilePic_1.changeProfilePicture);
 router.patch("/change_password", authorization_1.generalAuthoriser, userChangePassword_1.changePassword);
-router.patch("/update_profile", authorization_1.generalAuthoriser, updateProfile_1.updateProfile);
+router.patch("/update_profile", authorization_1.generalAuthoriser, upload_1.upload.single("identity_document"), updateProfile_1.updateProfile);
 router.delete("/delete_profile_image", authorization_1.generalAuthoriser, deleteProfilePic_1.deleteProfileImage);
 router.post("/resend-verification", resendVerification_1.resendVerification);
 router.get("/verify/:token", verifyUser_1.verifyUser);
+router.get("/get_profile", authorization_1.generalAuthoriser, getUserProfile_1.getUserProfile);
 exports.default = router;
