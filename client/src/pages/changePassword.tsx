@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useState } from "react";
-import { changePassword } from "../axiosSettings/axios";
+import { changePassword } from "../axiosSettings/user/userAxios";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
 
 export function ChangePassword() {

@@ -6,12 +6,12 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import { useState } from "react";
 import { formatCurrency } from "../utility/currencyFormat";
-import TicketsDropdown, { Ticket } from "../components/dropdownTickets";
+import TicketsDropdown, { Tickets } from "../components/dropdownTickets";
 
 const Reg4Event = () => {
   const [counter, setCounter] = useState(0);
-  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
-  const [cart, setCart] = useState<Ticket[]>([]);
+  const [selectedTicket, setSelectedTicket] = useState<Tickets | any>(null);
+  const [cart, setCart] = useState<Tickets[]>([]);
 
   const incrementCounter = () => {
     setCounter(counter + 1);
@@ -32,13 +32,13 @@ const Reg4Event = () => {
     }
   };
 
-  const handleTicketSelect = (ticket: Ticket) => {
+  const handleTicketSelect = (ticket: Tickets) => {
     setSelectedTicket(ticket);
   };
 
   const calculateSubTotal = () => {
     return cart.reduce(
-      (total, item) => total + item.price * (item.quantity ?? 0),
+      (total, item:any) => total + item.price * (item.quantity ?? 0),
       0
     );
   };
@@ -55,13 +55,13 @@ const Reg4Event = () => {
     return subTotal + tax;
   };
 
-  const handleDeleteCartItem = (index) => {
+  const handleDeleteCartItem = (index:any) => {
     const updatedCart = [...cart];
     updatedCart.splice(index, 1);
     setCart(updatedCart);
   };
 
-  const handlePaymentSubmit = (event) => {
+  const handlePaymentSubmit = (event:any) => {
     event.preventDefault();
     console.log("Tickets Purchased Successfully");
   };
@@ -99,7 +99,7 @@ const Reg4Event = () => {
                   Action
                 </th>
               </tr>
-              {cart.map((cartItem, index) => (
+              {cart.map((cartItem:any, index) => (
                 <tr key={index}>
                   <td>{cartItem.name}</td>
                   <td>

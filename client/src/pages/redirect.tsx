@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useEffect } from "react";
-import { verifyUser } from "../axiosSettings/axios";
+import { verifyUser } from "../axiosSettings/user/userAxios";
 import { showSuccessToast } from "../utility/toast";
 
 export const Redirect = () => {

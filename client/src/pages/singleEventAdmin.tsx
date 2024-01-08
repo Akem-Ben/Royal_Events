@@ -15,7 +15,7 @@ import Button from "../components/Button";
 import "./table.css";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getSingleEvent, upComingEvents } from "../axiosSettings/axios";
+import { getSingleEvent, upComingEvents } from "../axiosSettings/events/eventAxios";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
 
 function SingleEventAdmin() {

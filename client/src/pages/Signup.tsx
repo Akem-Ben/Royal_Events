@@ -5,7 +5,7 @@ import Input from "../components/Input";
 import Swal from "sweetalert2";
 import "../index.css";
 import { useState } from "react";
-import { registerUser } from "../axiosSettings/axios";
+import { registerUser } from "../axiosSettings/user/userAxios";
 import { showToast, showErrorToast } from "../utility/toast";
 
 function SignUp() {

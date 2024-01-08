@@ -6,13 +6,15 @@ import Card from '../components/Cards';
 import Events from "../components/events";
 
 export const HostedEventPage = () => {
+    const user:any = localStorage.getItem("user")
+    const newUser = JSON.parse(user)
     return (
         <>
         <div className="fixed left-0">
             <Sidebar />
         </div>
         <div className="pl-20 pb-10">
-            <Navbar name={"Praise"} image={"Him"} />
+        <Navbar name={newUser.first_name} image={newUser.profile_picture.length === 0 ? "/images/event1.png" : newUser.profile_picture} />
         </div>
         <div className="flex justify-center">
             <div className="w-[80%]">
@@ -25,10 +27,11 @@ export const HostedEventPage = () => {
                         </TabList>
                         <div className="h-10 flex flex-col md:flex-row gap-5 ">
                             <Events
-                            placeholder={"Any category"}
-                            text={"text-grey-500 text-xs"}
-                            h={""}
-                            />
+                                    placeholder={"Any category"}
+                                    text={"text-grey-500 text-xs"}
+                                    h={""} onChange={function (selectedEvent: any): void {
+                                        throw new Error("Function not implemented.");
+                                    } }                            />
                             <div className="h-10 px-4 py-2 bg-gray-50 rounded-[5px] justify-between items-center flex">
                                 <input
                                 type="date"

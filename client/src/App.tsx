@@ -13,6 +13,7 @@ import SingleEventAdmin from "./pages/singleEventAdmin";
 import Reg4Event from "./pages/registerForEvent";
 import { ChangePassword } from "./pages/changePassword";
 import { CreateEventPage } from "./pages/createEvent";
+import { HostedEventPage } from "./pages/hostedEvents";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/upcomingevents" element={<UpcomingEvents />} />
           <Route path="/single-event/:eventId" element={<SingleEvent />} />
+          <Route path="/hostedevent" element={<HostedEventPage />} />
           <Route path="/admin/single-event/:eventId" element={<SingleEventAdmin />} />
           <Route path="/reg4event" element={<Reg4Event />} />
           <Route path="/changepass" element={<ChangePassword />} />

@@ -4,7 +4,7 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import { useState } from "react";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
-import { loginUser, resendVerificationLink } from "../axiosSettings/axios";
+import { loginUser, resendVerificationLink } from "../axiosSettings/user/userAxios";
 import { Modal } from "../components/modal";
 
 export const SignIn = () => {
@@ -30,6 +30,10 @@ const handleResendLink = async()=>{
     const data = await resendVerificationLink({email: email})
     showSuccessToast(data.data.message)
     setLoading(false)
+    setFormData({
+      email: "",
+      password: ""
+    })
     return setShowModal(false);
   } catch (error: any) {
     if (error.response) {

@@ -12,12 +12,12 @@ export const createEvents = async (request: JwtPayload, response: Response) => {
       where: { id: userId },
     })) as unknown as UserAttributes;
 
-    // if (!user.is_completed_profile) {
-    //   return response.status(401).json({
-    //     status: `error`,
-    //     message: `Only users with completed profiles can organize events`,
-    //   });
-    // }
+    if (!user.is_completed_profile) {
+      return response.status(401).json({
+        status: `error`,
+        message: `Only users with completed profiles can organize events`,
+      });
+    }
     if (!user.isVerified) {
       return response.status(401).json({
         status: `error`,
@@ -37,13 +37,11 @@ export const createEvents = async (request: JwtPayload, response: Response) => {
     const createdEvent = await Event.create({
       ...request.body,
       id: eventId,
-      comments: [],
       owner_id: userId,
       tickets_bought: 0,
       likes: 0,
       event_image: request?.file?.path,
       isBlocked: false,
-      reports: [],
       organizers: organizers,
       registered_users: [],
       dislikes: 0,

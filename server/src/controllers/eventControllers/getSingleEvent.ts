@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
 import Event, { EventAttributes } from '../../models/eventModel/eventModel'
-import { convertToDDMMYY } from '../../helpers/helpers';
 
 export const getSingleEvent = async (request: Request, response: Response) => {
     try {
         const eventId = request.params.id
+console.log(eventId)
+        const eventInfo = await Event.findOne({ where: { id: eventId } }) as unknown as EventAttributes;
 
-        const eventInfo:any = await Event.findOne({ where: { id: eventId } }) as unknown as EventAttributes;
         if (!eventId) {
             return response.status(400).json({
                 status: 'Bad request',
@@ -19,6 +19,7 @@ export const getSingleEvent = async (request: Request, response: Response) => {
                 message: `Event not found`
             });
         }
+
         return response.status(200).json({
             status: 'Success',
             method: request.method,

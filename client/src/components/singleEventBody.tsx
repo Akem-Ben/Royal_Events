@@ -4,6 +4,7 @@ interface Props {
   description: string;
   time: string;
   organizerInfo: string;
+  organizerImage: string;
 }
 
 function SingleEventBody(props: Props) {
@@ -19,9 +20,15 @@ function SingleEventBody(props: Props) {
           {/* Weekends hours: <span className="text-green-500">7PM- 8PM</span> */}
         </p>
         <p className="pt-3">Organizer Contact</p>
-        <p className="w-[600px]">
-          {props.organizerInfo}
-        </p>
+        <div className="w-[600px]flex flex gap-[10px]">
+        <img
+          src={props.organizerImage}
+          alt="map"
+          width={50}
+          height={50}
+          className="border-radius-[50%]"
+        /> {props.organizerInfo}
+        </div>
       </div>
       <div className="w-5/12">
         <p className="font-medium">Event location</p>

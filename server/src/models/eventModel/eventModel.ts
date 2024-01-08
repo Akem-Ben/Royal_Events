@@ -9,21 +9,6 @@ type ticketType = {
     ticket_description: string;
     ticket_availability: boolean
 }
-type comment = {
-    user_image: string;
-    user_name: string;
-    comment: string;
-    comment_time: Date;
-    comment_likes: number;
-    comment_dislikes: number;
-}
-
-export type report = {
-    name_of_reporter: string;
-    email: string;
-    report: string;
-    phone_no: string;
-}
 
 type organizer = {
     id_of_organizer: string;
@@ -77,14 +62,12 @@ export interface EventAttributes {
     event_time: string;
     location?: string;
     ticket_types: ticketType[]
-    comments: comment[]
     no_of_attendees: string;
     owner_id: string;
     tickets_bought: number;
     organizers?: organizer[];
     likes: number;
     isBlocked: boolean;
-    reports: report[]
     registered_users: event_registered_users[]
     dislikes: number;
     createdAt: Date,
@@ -127,9 +110,6 @@ ticket_types: {
     type: DataTypes.JSON,
     allowNull: false,
 },
-comments: {
-    type: DataTypes.JSON
-},
 owner_id: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -142,9 +122,6 @@ likes: {
 },
 isBlocked: {
     type: DataTypes.BOOLEAN
-},
-reports: {
-    type: DataTypes.JSON,
 },
 registered_users: {
     type: DataTypes.JSON,

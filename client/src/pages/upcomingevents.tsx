@@ -5,7 +5,7 @@ import { Key, useEffect, useState } from "react";
 import { showToast, showErrorToast } from "../utility/toast";
 import Events from "../components/events";
 import Locations from "../components/locations";
-import { upComingEvents } from "../axiosSettings/axios";
+import { upComingEvents } from "../axiosSettings/events/eventAxios";
 
 export const UpcomingEvents = () => {
   let user: any = localStorage.getItem("user");

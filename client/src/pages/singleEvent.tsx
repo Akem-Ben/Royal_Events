@@ -5,120 +5,140 @@ import SingleEventHeader from "../components/singleEventHeader";
 import Cards from "../components/Cards";
 import SingleEventBody from "../components/singleEventBody";
 import { FaArrowLeft, FaThumbsDown, FaThumbsUp } from "react-icons/fa6";
-import { useEffect, useState } from "react";
-import { getSingleEvent, makeComments, upComingEvents } from "../axiosSettings/axios";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
 import { useParams } from "react-router-dom";
+import { makeComments, getEventComments, getSingleEvent, upComingEvents } from "../axiosSettings/events/eventAxios";
+import { useEffect, useState } from "react";
 
 function SingleEvent() {
-    const user:any = localStorage.getItem("user")
-    const mainUser:any = JSON.parse(user)
-    // const event_id = localStorage.getItem("event_id")
-    const { eventId } = useParams();
-    const [event, setEvent] = useState<any>({})
-    const [comments, setComments] = useState<any>([])
-    const [newComment, setNewComment] = useState("")
-    const [loading, setLoading] = useState(false)
-    const [upcomingEvents, setUpcomingEvents] = useState<any>([])
+  const user:any = localStorage.getItem("user")
+  const mainUser:any = JSON.parse(user)
+  const {eventId} = useParams()
+  const [fetchedComments, setFetchedComments] = useState<any>([])
+  const [events, setEvents] = useState<any>({})
+  const [newComment, setNewComment] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [organizer, setOrganizer] = useState<any>({})
+  const [upcomingEvents, setUpcomingEvents] = useState<any>([])
 
-    function formatDate(dateString:any) {
-      const date = new Date(dateString);
-      const day = date.getDate();
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
-    
-      const formattedDay = day < 10 ? `0${day}` : day;
-      const formattedMonth = month < 10 ? `0${month}` : month;
-    
-      return `${formattedDay}/${formattedMonth}/${year}`;
-    }
-    function formatDateTime(dateString: any) {
-      const date = new Date(dateString);
+  function formatDate(dateString:any) {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
   
-      const day = date.getDate();
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
+    const formattedDay = day < 10 ? `0${day}` : day;
+    const formattedMonth = month < 10 ? `0${month}` : month;
   
-      const hours = date.getHours();
-      const minutes = date.getMinutes();
-  
-      const formattedDay = day < 10 ? `0${day}` : day;
-      const formattedMonth = month < 10 ? `0${month}` : month;
-      const formattedHours = hours < 10 ? `0${hours}` : hours;
-      const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-  
-      return `${formattedDay}/${formattedMonth}/${year} ${formattedHours}:${formattedMinutes}`;
+    return `${formattedDay}/${formattedMonth}/${year}`;
   }
-    const locate = localStorage.getItem("location")
-    const fetchData = async()=>{
-      try{
-        const response = await getSingleEvent(eventId)
-        response.data.data.event_date = formatDate(response.data.data.event_date)
-        const event_comments = response.data.data.comments
-        event_comments.map((a:any)=> {
-          a.comment_time = formatDateTime(a.comment_time)
-        })
-        response.data.data.comments.length !== 0 ? setComments(event_comments) : null
-        setEvent(response.data.data)
-        return response.data.data
-        }catch(error:any){
-            console.log(error)
-        }
-    }
+  function formatDateTime(dateString: any) {
+    const date = new Date(dateString);
 
-    const fetchUpcomingEvents = async()=>{
-      try{
-        const response = await upComingEvents()
-       return setUpcomingEvents(response)
-      }catch(error:any){
-        console.log(error)
-      }
-    }
-    useEffect(()=>{
-        fetchData();
-        fetchUpcomingEvents();
-    }, [])
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
 
-    const handleCommentChange = async(e:any)=>{
-      try{
-        e.preventDefault()
-        console.log('er',upcomingEvents)
-        let target = e.target.value
-        setNewComment(target)
-      }catch(error:any){
-        console.log(error)
-      }
-    }
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
 
-    const addComments = async(e:React.FormEvent<HTMLFormElement>)=>{
-      e.preventDefault()
-      try{
-        setLoading(true)
-        const params = localStorage.getItem("event_id")
-        const body = {
-          comment: newComment
-        }
-        const response = await makeComments(body, params)
-        if(response.status !== 200){
-          setLoading(false)
-          return showErrorToast(response.data.message)
-        }
-        fetchData()
-        setLoading(false)
-        showSuccessToast(response.data.message)
-        setNewComment("")
-      }catch (error: any) {
-        if (error.response) {
-          return showErrorToast(error.response.data.message);
-        }
-        if (error.request) {
-          return showErrorToast("Network Error");
-        }
-        if (error.message) {
-          return showErrorToast(error.message);
-        }
-      }
+    const formattedDay = day < 10 ? `0${day}` : day;
+    const formattedMonth = month < 10 ? `0${month}` : month;
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+    return `${formattedDay}/${formattedMonth}/${year} ${formattedHours}:${formattedMinutes}`;
+}
+
+const fetchEventData = async()=>{
+  try{
+    const response = await getSingleEvent(eventId)
+    response.data.event_date = formatDate(response.data.event_date)
+    setOrganizer(response.data.organizers[0])
+    return setEvents(response.data)
+  } catch (error: any) {
+    if (error.response) {
+      return showErrorToast(error.response.data.message);
+    } else if (error.request) {
+      return showErrorToast('Network Error. Please try again later.');
+    } else {
+      return showErrorToast('Error occurred. Please try again.');
     }
+  }
+}
+
+const fetchEventComments = async()=>{
+  try{
+    const response = await getEventComments(eventId)
+    setFetchedComments(response.mainComments)
+  }catch (error: any) {
+    if (error.response) {
+      return showErrorToast(error.response.data.message);
+    } else if (error.request) {
+      return showErrorToast('Network Error. Please try again later.');
+    } else {
+      return showErrorToast('Error occurred. Please try again.');
+    }
+  }
+}
+const fetchUpcomingEvents = async()=>{
+  try{
+    const response = await upComingEvents()
+    return setUpcomingEvents(response)
+  }catch(error:any){
+    console.log(error)
+  }
+}
+
+useEffect(()=>{
+  fetchEventData()
+  fetchUpcomingEvents()
+  fetchEventComments()
+},[])
+const locate = localStorage.getItem("location")
+
+
+const handleCommentChange = async(e:any)=>{
+  try{
+    e.preventDefault()
+    let target = e.target.value
+    setNewComment(target)
+  }catch(error:any){
+    console.log(error)
+  }
+}
+
+const addComments = async(e:React.FormEvent<HTMLFormElement>)=>{
+  try{
+    e.preventDefault()
+    setLoading(true)
+    const body = {
+      comments: newComment
+    }
+    const response = await makeComments(body, eventId)
+    console.log('add_comment',response)
+    if(response.status !== 'success'){
+      setLoading(false)
+      return showErrorToast(response.message)
+    }
+    showSuccessToast(response.message)
+    fetchEventComments()
+    fetchEventData()
+    setNewComment("")
+    localStorage.setItem("event", JSON.stringify(response.data))
+    return setLoading(false)
+  }catch (error: any) {
+    if (error.response) {
+      return showErrorToast(error.response.data.message);
+    } else if (error.request) {
+      return showErrorToast('Network Error. Please try again later.');
+    } else {
+      return showErrorToast('Error occurred. Please try again.');
+    }
+  }
+}
+
+
   return (
     <div className="w-screen">
       <div className="fixed">
@@ -128,12 +148,12 @@ function SingleEvent() {
         <div>
           <Navbar
             name={mainUser.first_name} image={mainUser.profile_picture?.length === 0
-                ? "/images/event1.png"
-                : mainUser.profile_picture}
+              ? "/images/event1.png"
+              : mainUser.profile_picture}
           />
         </div>
         <div className="ml-16 mr-16 mt-2">
-         <div className="pl-8 my-2">
+          <div className="pl-8 my-2">
             <a href={`http://localhost:5173${locate}`} className="no-underline text-black">
               <div className="flex">
                 <FaArrowLeft className="text-black" />{" "}
@@ -142,23 +162,20 @@ function SingleEvent() {
             </a>
           </div>
           <SingleEventHeader
-            title={event.title}
-            description={event.description}
-            address={event.location}
-            date={`${event.event_date} ${event.event_time}`}
-            image={event.event_image}
+            title={events.title}
+            description={events.description}
+            address={events.location}
+            date={`${events.event_date}, ${events.event_time}`}
+            image={
+              events.event_image
+            }
           />
           {/* description and map */}
           <div>
             <SingleEventBody
-              description={event.description}
-              time={event.event_time}
-              organizerInfo={
-                // event.organizers?.map((a:any)=> a.name_of_organizer)
-                `${event.organizers[0].name_of_organizer}
-                 ${event.organizers[0].email}`
-              }
-            />
+              description={events.description}
+              time={events.event_time}
+              organizerInfo={`${organizer.name_of_organizer}: ${organizer.email_of_organiser}`} organizerImage={organizer.image_of_organizer}/>
           </div>
           {/* comment section */}
           <div className="text-gray-900 text-base font-medium leading-snug tracking-tight py-4">
@@ -174,7 +191,7 @@ function SingleEvent() {
                 className="w-8 h-8 relative rounded-[200px] border-2 border-gray-300"
               />
               <h3 className="text-black text-lg pl-2 font-semibold">
-                {mainUser.user_name}
+              {mainUser.user_name}
               </h3>
             </div>
             <hr />
@@ -186,7 +203,6 @@ function SingleEvent() {
                     className="h-12 w-full border border-gray-500 px-2 font-Inter"
                     required
                     value={newComment}
-                    // name="comment"
                     onChange={(e)=> handleCommentChange(e)}
                   />
                 </div>
@@ -201,31 +217,34 @@ function SingleEvent() {
               </form>
             </div>
           </div>
-          <div className="py-3 bg-gray-100 overflow-y-scroll h-[300px] p-[20px]">
-          {comments && comments.map((comment:any, index:any) => (
+          <div className="py-3 bg-gray-100 p-[20px] h-[300px] overflow-y-scroll">
+            {fetchedComments && fetchedComments.map((comment:any, index:any)=>
             <div key={index}>
               <div className="flex">
-                  <img
-                    src={comment.user_image}
-                    alt="profile_pic"
-                    className="w-8 h-8 relative rounded-[200px] border-2 border-gray-300" />
-                  <h3 className="text-black text-lg pl-2 font-semibold">
-                    {comment.user_name}
-                  </h3>
-                </div><p className="font-Inter">
-                    {comment.comment}
-                  </p><div className="flex justify-start font-Inter">
-                    <a href="#" className="w-8 h-8">
-                      <FaThumbsUp className="" />
-                    </a>
-                    <a href="#" className="w-8 h-8">
-                      <FaThumbsDown className="" />
-                    </a>
-                    <p>{comment.comment_time}</p>
-                  </div>
+                <img
+                  src={comment.picture}
+                  alt="profile_pic"
+                  className="w-8 h-8 relative rounded-[200px] border-2 border-gray-300"
+                />
+                <h3 className="text-black text-lg pl-2 font-semibold">
+                  {comment.name}
+                </h3>
+              </div>
+              <p className="font-Inter">
+                {comment.comment}
+              </p>
+              <div className="flex justify-start font-Inter">
+                <a href="#" className="w-8 h-8">
+                  <FaThumbsUp className="" />
+                </a>
+                <a href="#" className="w-8 h-8">
+                  <FaThumbsDown className="" />
+                </a>
+                <p>{formatDateTime(comment.comment_time)}</p>
+              </div>
             </div>
-              ))}
-              {comments.length === 0 && <p>No comments yet.</p>}
+            )}
+            {!fetchedComments && <p>No comments Yet</p>}
           </div>
           {/* other events */}
           <div className="pb-4">
@@ -234,24 +253,21 @@ function SingleEvent() {
                 Others you may like
               </div>
               <div className="flex gap-3 overflow-x-scroll">
-              { upcomingEvents.length !== 0 ? ( upcomingEvents?.map((event:any, index:any) => (
+                {upcomingEvents?.length !== 0 ? ( upcomingEvents?.map((events:any, index:any)=>(
                 <div key={index}>
                 <Cards
-                  date={event.event_date}
-                  ticketsNo={event.dataValues?.tickets_bought}
-                  title={event.dataValues?.title}
-                  description={
-                    event.dataValues?.description
-                  }
-                  image={event.dataValues?.event_image}
-                  id={event.dataValues.id}
+                  date={events.event_date}
+                  ticketsNo={events.dataValues?.tickets_bought}
+                  title={events.dataValues?.title}
+                  description={events.dataValues?.description}
+                  image={events.dataValues?.event_image}
+                  id={events.dataValues?.id}
                   event_details={event}
                 />
-              </div>
-              ))):(
-                null
-                )}
                 </div>
+                ))):(null)
+                }
+              </div>
             </div>
           </div>
         </div>

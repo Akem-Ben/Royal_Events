@@ -9,7 +9,7 @@ import Modal from "../components/modal";
 import TicketsDropdown, { Tickets } from "../components/dropdownTickets";
 import Events from "../components/events";
 import { showErrorToast, showToast } from "../utility/toast";
-import { createEvent } from "../axiosSettings/axios";
+import { createEvent } from "../axiosSettings/events/eventAxios";
 
 export const CreateEventPage = () => {
   const user: any = localStorage.getItem("user");
@@ -451,7 +451,7 @@ export const CreateEventPage = () => {
             </div>
             <div className="flex">
               <Input
-                title={"EVENT TIME AND DATE"}
+                title={"EVENT TIME"}
                 placeholder={"8:00pm"}
                 type={"text"}
                 onChange={handleInputChange}
@@ -460,7 +460,7 @@ export const CreateEventPage = () => {
                 name="event_time"
               />
               <Input
-                title={""}
+               title={"EVENT DATE"}
                 placeholder={"dd-mm-yyyy"}
                 type={"date"}
                 onChange={handleInputChange}
