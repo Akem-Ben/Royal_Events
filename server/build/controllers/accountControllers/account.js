@@ -3,18 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.reportEvent = void 0;
+exports.addAccount = void 0;
 const userModel_1 = __importDefault(require("../../models/userModel/userModel"));
-const eventModel_1 = __importDefault(require("../../models/eventModel/eventModel"));
-const reportModel_1 = require("../../models/reportModel/reportModel");
 const uuid_1 = require("uuid");
-const reportEvent = async (request, response) => {
+const bankModel_1 = __importDefault(require("../../models/bankAccountModel/bankModel"));
+const addAccount = async (request, response) => {
     try {
-        const eventId = request.params.id;
         const userId = request.user.id;
-        const { report } = request.body;
+        const { bank_name, account_name, account_number } = request.body;
         const user = await userModel_1.default.findOne({ where: { id: userId } });
-        const eventInfo = await eventModel_1.default.findOne({ where: { id: eventId } });
         if (!userId) {
             return response.status(400).json({
                 status: "error",
@@ -27,33 +24,27 @@ const reportEvent = async (request, response) => {
                 message: "You have to login to report this event",
             });
         }
-        if (!eventInfo) {
-            return response.status(404).json({
-                status: "error",
-                message: "Event not found",
-            });
-        }
-        const newReport = await reportModel_1.Report.create({
+        const userAccount = await bankModel_1.default.create({
             id: (0, uuid_1.v4)(),
             owner_id: user.id,
             owner_name: user.user_name,
-            event_id: eventInfo.id,
-            report,
-            report_time: new Date(),
+            bank_name,
+            account_name,
+            account_number,
             createdAt: new Date(),
             updatedAt: new Date()
         });
-        const findReport = await reportModel_1.Report.findOne({ where: { id: newReport.id } });
-        if (!findReport) {
+        const findAccount = await bankModel_1.default.findOne({ where: { id: userAccount.id } });
+        if (!findAccount) {
             return response.status(200).json({
                 status: `error`,
-                message: `Report not successful`,
+                message: `Account not successfully added`,
             });
         }
         return response.status(200).json({
             status: `success`,
-            message: `Report successfully submitted`,
-            findReport
+            message: `Account successfully added`,
+            findAccount
         });
     }
     catch (error) {
@@ -64,4 +55,4 @@ const reportEvent = async (request, response) => {
         });
     }
 };
-exports.reportEvent = reportEvent;
+exports.addAccount = addAccount;

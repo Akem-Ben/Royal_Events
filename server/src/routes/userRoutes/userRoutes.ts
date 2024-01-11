@@ -10,6 +10,9 @@ import { deleteProfileImage } from "../../controllers/userControllers/deleteProf
 import { resendVerification } from "../../controllers/userControllers/resendVerification";
 import { verifyUser } from "../../controllers/userControllers/verifyUser";
 import { getUserProfile } from "../../controllers/userControllers/getUserProfile";
+import { addAccount } from "../../controllers/accountControllers/createAccount";
+import { getUserBankAccount } from "../../controllers/accountControllers/getAccount";
+import { userEditAccount } from "../../controllers/accountControllers/editAccount";
 
 const router = express.Router();
 
@@ -22,4 +25,7 @@ router.delete("/delete_profile_image", generalAuthoriser, deleteProfileImage);
 router.post("/resend-verification", resendVerification);
 router.get("/verify/:token", verifyUser)
 router.get("/get_profile", generalAuthoriser, getUserProfile)
+router.post("/add_account", generalAuthoriser, addAccount)
+router.get("/get_user_account", generalAuthoriser, getUserBankAccount)
+router.patch("/edit_account", generalAuthoriser, userEditAccount)
 export default router;

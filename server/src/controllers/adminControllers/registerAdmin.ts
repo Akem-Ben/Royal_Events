@@ -67,6 +67,7 @@ export const registerAdmin = async (request: Request, response: Response) => {
       isVerified: true,
       isBlocked: false,
       reports: [],
+      isAddAccount: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

@@ -340,6 +340,18 @@ const closeSnappedModal = async()=>{
               </div>
             </div>
           </Link>
+          <Link
+            to={"/user_account"}
+            className="grow shrink basis-0 rounded-md flex-col justify-center items-center inline-flex no-underline"
+          >
+            <div className="px-4 py-3 justify-start items-center gap-2 inline-flex">
+              <div className="justify-center items-center gap-2 flex">
+                <div className="text-gray-800 text-sm font-medium font-['Inter'] leading-tight tracking-tight">
+                Bank Account Details
+                </div>
+              </div>
+            </div>
+          </Link>
         </div>
 
         <div className="justify-start items-start gap-4 sm:gap-[104px] inline-flex">
@@ -455,6 +467,13 @@ const closeSnappedModal = async()=>{
             >
               {deleteLoading ? "Loading..." : "Delete Avatar"}
             </button>
+            <div className="flex flex-col items-center">
+            <p className="pt-3 font-medium">Account Status</p>
+                <p className="font-Inter">
+                {mainUser.isBlocked ? <span className="text-red-500">Blocked, Please <a className="text-red-500" href="mailto:admin@example.com?subject=Blocked&body=Please%20Contact%20Admin">Contact Admin</a></span> : <span className="text-green-500">Active</span>}
+                <br />
+              </p>
+              </div>
           </div>
         </div>
         {showModal && (

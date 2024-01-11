@@ -18,7 +18,7 @@ const userAttendedEvents = async (request, response) => {
         }
         const pastEvent = await eventModel_1.default.findAll({
             where: {
-                event_start_date: {
+                event_date: {
                     [sequelize_1.Op.lt]: new Date()
                 }
             }

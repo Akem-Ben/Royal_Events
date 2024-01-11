@@ -133,7 +133,7 @@ export const UpcomingEvents = () => {
           title={event.dataValues.title}
           description={event.dataValues.description}
           id={event.dataValues.id}
-          event_details={event}
+          event_details={event.dataValues}
         />
         </div>
       ))}

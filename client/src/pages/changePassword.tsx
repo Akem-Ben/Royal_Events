@@ -76,6 +76,18 @@ export function ChangePassword() {
             <RiLockPasswordFill />
             Password
           </div>
+          <Link
+            to={"/user_account"}
+            className="grow shrink basis-0 rounded-md flex-col justify-center items-center inline-flex no-underline"
+          >
+            <div className="px-4 py-3 justify-start items-center gap-2 inline-flex">
+              <div className="justify-center items-center gap-2 flex">
+                <div className="text-gray-800 text-sm font-medium font-['Inter'] leading-tight tracking-tight">
+                 Bank Account Details
+                </div>
+              </div>
+            </div>
+          </Link>
         </div>
         <div className="justify-start items-start gap-4 sm:gap-[104px]">
           <form className="w-full sm:w-[578px] flex-col justify-start items-start" onSubmit={handleSubmit}>

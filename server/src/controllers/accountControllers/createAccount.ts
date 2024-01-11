@@ -1,17 +1,14 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
 import User, { UserAttributes } from "../../models/userModel/userModel";
-import Event, { EventAttributes } from "../../models/eventModel/eventModel";
-import {Report} from '../../models/reportModel/reportModel'
 import { v4 } from "uuid";
+import Bank from "../../models/bankAccountModel/bankModel";
 
-export const reportEvent = async (request: JwtPayload, response: Response) => {
+export const addAccount = async (request: JwtPayload, response: Response) => {
   try {
-    const eventId = request.params.id
     const userId = request.user.id
-    const {report} = request.body
+    const {bank_name, account_name, account_number} = request.body
     const user:any = await User.findOne({where: {id:userId}}) as unknown as UserAttributes
-    const eventInfo:any = await Event.findOne({ where: { id: eventId } }) as unknown as EventAttributes;
 
     if (!userId) {
       return response.status(400).json({
@@ -25,36 +22,41 @@ export const reportEvent = async (request: JwtPayload, response: Response) => {
         message: "You have to login to report this event",
       });
     }
-    if (!eventInfo) {
-      return response.status(404).json({
-        status: "error",
-        message: "Event not found",
-      });
+    const testBank = await Bank.findOne({where: {owner_id:userId}})
+
+    if(testBank){
+      return response.status(200).json({
+        status: `error`,
+        message: `You have already added a bank account, you can edit your account details`,
+      })
     }
-    
-    const newReport = await Report.create({
+    const userAccount = await Bank.create({
       id: v4(),
       owner_id: user.id,
       owner_name: user.user_name,
-      event_id: eventInfo.id,
-      report,
-      report_time: new Date(),
+      bank_name,
+      account_name,
+      account_number,
       createdAt: new Date(),
       updatedAt: new Date()
     })
 
-    const findReport = await Report.findOne({where: {id:newReport.id}})
+    const findAccount = await Bank.findOne({where: {id:userAccount.id}})
 
-    if(!findReport){
-      return response.status(200).json({
+    if(!findAccount){
+      return response.status(400).json({
         status: `error`,
-        message: `Report not successful`,
+        message: `Account not successfully added`,
       })
     }
+
+    await User.update({isAddAccount:true}, {where: { id: userId }})
+    const updatedUser = await User.findOne({where: {id:userId}})
     return response.status(200).json({
       status: `success`,
-      message: `Report successfully submitted`,
-      findReport
+      message: `Account successfully added`,
+      findAccount,
+      updatedUser
     });
 
   } catch (error:any) {

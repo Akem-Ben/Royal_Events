@@ -15,6 +15,9 @@ const deleteProfilePic_1 = require("../../controllers/userControllers/deleteProf
 const resendVerification_1 = require("../../controllers/userControllers/resendVerification");
 const verifyUser_1 = require("../../controllers/userControllers/verifyUser");
 const getUserProfile_1 = require("../../controllers/userControllers/getUserProfile");
+const createAccount_1 = require("../../controllers/accountControllers/createAccount");
+const getAccount_1 = require("../../controllers/accountControllers/getAccount");
+const editAccount_1 = require("../../controllers/accountControllers/editAccount");
 const router = express_1.default.Router();
 router.post("/signup", userRegister_1.registerUser);
 router.post("/signin", userLogin_1.userLogin);
@@ -25,4 +28,7 @@ router.delete("/delete_profile_image", authorization_1.generalAuthoriser, delete
 router.post("/resend-verification", resendVerification_1.resendVerification);
 router.get("/verify/:token", verifyUser_1.verifyUser);
 router.get("/get_profile", authorization_1.generalAuthoriser, getUserProfile_1.getUserProfile);
+router.post("/add_account", authorization_1.generalAuthoriser, createAccount_1.addAccount);
+router.get("/get_user_account", authorization_1.generalAuthoriser, getAccount_1.getUserBankAccount);
+router.patch("/edit_account", authorization_1.generalAuthoriser, editAccount_1.userEditAccount);
 exports.default = router;

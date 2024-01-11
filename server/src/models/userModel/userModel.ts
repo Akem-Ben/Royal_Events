@@ -29,6 +29,7 @@ export interface UserAttributes {
   is_completed_profile: boolean;
   isVerified: boolean;
   isBlocked: boolean;
+  isAddAccount: boolean;
   reports: report[];
   createdAt: Date;
   updatedAt: Date;
@@ -83,6 +84,10 @@ User.init(
       type: DataTypes.STRING,
     },
     isBlocked: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    isAddAccount: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },

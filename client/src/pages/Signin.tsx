@@ -10,6 +10,7 @@ import { Modal } from "../components/modal";
 export const SignIn = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false)
+  const [showModal3, setShowModal3] = useState(false);
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: "",
@@ -67,11 +68,14 @@ const handleResendLink = async()=>{
       if(response.status !== 200){
         return showErrorToast(response.data.message)
       }
+      if (response.data.user.isBlocked) {
+        return setShowModal3(true);
+      }
       localStorage.setItem("user", JSON.stringify(response.data.user))
       localStorage.setItem("token", response.data.token)
       showSuccessToast(response.data.message)
-      console.log(response.data)
-      navigate("/upcomingevents")
+      const user = response.data.user
+      user.role === "User" ? navigate("/upcomingevents") : null
     }catch (error: any) {
       if (error.response) {
         // Server responded with a status code other than 2xx
@@ -153,6 +157,13 @@ const handleResendLink = async()=>{
       {showModal && (
         <Modal onClose={() => setShowModal(false)} buttons={buttons}>
           <p className="text-center">Only verified users can login <br />please check your email address <span className="text-blue-600">{formData.email}</span>, <br /> and click on the verification link that was sent to you when you registered.</p>
+        </Modal>
+      )}
+        {showModal3 && (
+        <Modal onClose={() => setShowModal3(false)}>
+          <p className="font-Inter text-center">
+          <span className="text-red-500">Your Account has been blocked, Please <a className="text-red-500" href="mailto:admin@example.com?subject=Blocked&body=Please%20Contact%20Admin">Click Here To Contact Admin</a></span>
+              </p>
         </Modal>
       )}
     </div>

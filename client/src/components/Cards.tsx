@@ -3,6 +3,7 @@ import { useState } from "react";
 import Button from "./Button";
 import { useNavigate, redirect } from "react-router-dom";
 import { showErrorToast } from "../utility/toast";
+import Modal from "./modal";
 
 interface Props {
   date: string;
@@ -16,18 +17,23 @@ interface Props {
 
 function Card(props: Props) {
   const [isHovered, setIsHovered] = useState(false);
-  const navigate = useNavigate()
 const params = useLocation()
+const [showModal3, setShowModal3] = useState(false);
   const handleEventPage = async(id:any, event_details:any)=>{
     try{
-      const user = localStorage.getItem("user")
+      const user:any = localStorage.getItem("user")
+      const mainUser = JSON.parse(user)
+      
       if(!user){
         return showErrorToast("Only logged in users can view events")
+      }
+      if (user.isBlocked) {
+        return setShowModal3(true);
       }
       localStorage.setItem("event_id", id)
       localStorage.setItem("event", JSON.stringify(event_details))
       localStorage.setItem("location", params.pathname)
-      return window.location.href = `/single-event/${id}`
+      return event_details.owner_id === mainUser.id ? window.location.href = `/organizer/single-event/${id}` : window.location.href = `/single-event/${id}`
     }catch(error:any){
       console.log(error)
     }
@@ -35,7 +41,7 @@ const params = useLocation()
 
   return (
     <div
-      className={`relative w-[386.67px] h-[400px] pt-[282px] rounded-md flex-col justify-end items-center flex bg-cover bg-center transition-all duration-100 delay-200 z-20`}
+      className={`relative w-[386.67px] h-[400px] pt-[282px] rounded-md flex-col justify-end items-center flex bg-cover bg-center transition-all duration-100 delay-200`}
       style={{ backgroundImage: `url(${props.image})` }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -130,6 +136,13 @@ const params = useLocation()
           />
         </div>
       </div>
+      {showModal3 && (
+        <Modal onClose={() => setShowModal3(false)}>
+          <p className="font-Inter text-center">
+          <span className="text-red-500">Your Account has been blocked, Please <a className="text-red-500" href="mailto:admin@example.com?subject=Blocked&body=Please%20Contact%20Admin">Click Here To Contact Admin</a></span>
+              </p>
+        </Modal>
+      )}
     </div>
   );
 }

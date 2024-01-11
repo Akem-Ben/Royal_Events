@@ -4,10 +4,121 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import Card from '../components/Cards';
 import Events from "../components/events";
+import { showErrorToast } from "../utility/toast";
+import { getUserAttendedEvents, getUserEvents, upComingEvents } from "../axiosSettings/events/eventAxios";
+import { useEffect, useState } from "react";
 
 export const HostedEventPage = () => {
     const user:any = localStorage.getItem("user")
     const newUser = JSON.parse(user)
+    const [userEvents, setUserEvents] = useState<any>([])
+    const [filters, setFilters] = useState({
+        eventType: "",
+        location: "",
+        date: "",
+      });
+    const [getEvents, setGetEvents] = useState<any>([])
+    const [attendedEvents, setAttendedEvents] = useState<any>([])
+
+    function formatDate(dateString:any) {
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
+      
+        const formattedDay = day < 10 ? `0${day}` : day;
+        const formattedMonth = month < 10 ? `0${month}` : month;
+      
+        return `${formattedDay}/${formattedMonth}/${year}`;
+      }
+
+    const getHostedevents = async()=> {
+        try{
+            const response = await getUserEvents()
+            return setUserEvents(response.getMyEvents)
+        }catch (error: any) {
+            if (error.response) {
+              return showErrorToast(error.response.data.message);
+            } else if (error.request) {
+              return showErrorToast('Network Error. Please try again later.');
+            } else {
+              return showErrorToast('Error occurred. Please try again.');
+            }
+          }
+    }
+
+    const handleDate = async (e:any) => {
+        try{
+            e.preventDefault()
+            const date = e.target.value
+            const originalDate = new Date(date);
+            const isoDateString = originalDate.toISOString();
+    
+            setFilters({...filters, date:isoDateString})
+    
+        }catch(error:any){
+            console.log(error)
+        }
+      }
+
+    const fetcUpcominghData = async () => {
+        try {
+          const params = {
+            eventType: filters.eventType,
+            location: filters.location,
+            date: filters.date,
+          }
+          const response:any = await upComingEvents(params)
+    
+          if(response.length !== 0){
+            return setGetEvents(response);
+          }else{
+            null
+          }
+        } catch (error: any) {
+          if (error.response) {
+            return showErrorToast(error.response.data.message);
+          }
+          if (error.request) {
+            return showErrorToast("Network Error");
+          }
+          if (error.message) {
+            return showErrorToast(error.message);
+          }
+        }
+      };
+
+      const getAttendedEvents = async () => {
+        try {
+
+          const response:any = await getUserAttendedEvents()
+          console.log(response)
+          if(response.length !== 0){
+            return setAttendedEvents(response.userEvents);
+          }else{
+            null
+          }
+        } catch (error: any) {
+          if (error.response) {
+            return showErrorToast(error.response.data.message);
+          }
+          if (error.request) {
+            return showErrorToast("Network Error");
+          }
+          if (error.message) {
+            return showErrorToast(error.message);
+          }
+        }
+      };
+      
+
+    useEffect(()=>{
+        fetcUpcominghData()
+    },[filters])
+    useEffect(()=>{
+        getHostedevents()
+        getAttendedEvents()
+    },[])
     return (
         <>
         <div className="fixed left-0">
@@ -29,112 +140,79 @@ export const HostedEventPage = () => {
                             <Events
                                     placeholder={"Any category"}
                                     text={"text-grey-500 text-xs"}
-                                    h={""} onChange={function (selectedEvent: any): void {
-                                        throw new Error("Function not implemented.");
-                                    } }                            />
+                                    h={""}
+                                    onChange={(eventType) => setFilters({ ...filters, eventType })}
+                            />
                             <div className="h-10 px-4 py-2 bg-gray-50 rounded-[5px] justify-between items-center flex">
-                                <input
+                            <input
                                 type="date"
                                 name=""
                                 id=""
-                                className="text-slate-500 text-xs font-normal font-Inter bg-gray-50"
-                                />
+                                className="text-green-500 bg-gray-200 w-[120px] h-[20px] text-[16px] font-normal font-Inter cursor-pointer"
+                                onChange={handleDate}
+                            />
                             </div>
                         </div>
                     </div>
-            
                     <TabPanel>
-                        <div className="mt-6 flex-wrap grid grid-cols-3 gap-8 flex">
+                        {userEvents?.length ? (
+                        <div className="mt-6 flex-wrap grid grid-cols-3 gap-6 flex">
+                            {userEvents?.map((event:any)=> (
+                            <div key={event.id}>
                             <Card
-                                image={"/images/event1.png"}
-                                date={"25 of Dec, 2023"}
-                                ticketsNo={0}
-                                title={"Neon Groove"}
-                                description={
-                                    "Infuse vibrant neon colors, glow-in-the-dark elements, and energetic music for a lively and immersive experience."
-                                }
+                                image={event.event_image}
+                                date={formatDate(event.event_date)}
+                                ticketsNo={event.tickets_bought}
+                                title={event.title}
+                                description={event.description}
+                                id={event.id}
+                                event_details={event}
                             />
-                            <Card
-                                image={"/images/event2.jpeg"}
-                                date={"25 of Dec, 2023"}
-                                ticketsNo={0}
-                                title={"Expression Unveiled"}
-                                description={
-                                    "Celebrate diverse forms of artistic expression with unique installations, interactive exhibits, and expressive artwork."
-                                }
-                            />
-                            <Card
-                                image={"/images/event3.jpeg"}
-                                date={"25 of Dec, 2023"}
-                                ticketsNo={0}
-                                title={"Couture Elegance"}
-                                description={
-                                    "Showcase high-end fashion in a sophisticated setting with glamorous runway designs and chic décor."
-                                }
-                            />
+                            </div>
+                            ))}
                         </div>
+                        ):(<p className="ml-[11%] mt-[2%]">You have not hosted any events yet</p>)
+                        }
                     </TabPanel>
                     <TabPanel>
+                    {getEvents.length ? (
                         <div className="mt-6 flex-wrap grid grid-cols-3 gap-8 flex">
-                            <Card
-                                image={"/images/event4.jpeg"}
-                                date={"25 of Dec, 2023"}
-                                ticketsNo={0}
-                                title={"Neon Groove"}
-                                description={
-                                    "Infuse vibrant neon colors, glow-in-the-dark elements, and energetic music for a lively and immersive experience."
-                                }
+                            {getEvents?.map((event:any)=> (
+                            <div key={event.dataValues.id}>
+                           <Card
+                            image={event.dataValues.event_image}
+                            date={event.event_date}
+                            ticketsNo={event.dataValues.tickets_bought}
+                            title={event.dataValues.title}
+                            description={event.dataValues.description}
+                            id={event.dataValues.id}
+                            event_details={event.dataValues}
                             />
-                            <Card
-                                image={"/images/event5.jpeg"}
-                                date={"25 of Dec, 2023"}
-                                ticketsNo={0}
-                                title={"Expression Unveiled"}
-                                description={
-                                    "Celebrate diverse forms of artistic expression with unique installations, interactive exhibits, and expressive artwork."
-                                }
-                            />
-                            <Card
-                                image={"/images/event6.jpeg"}
-                                date={"25 of Dec, 2023"}
-                                ticketsNo={0}
-                                title={"Couture Elegance"}
-                                description={
-                                    "Showcase high-end fashion in a sophisticated setting with glamorous runway designs and chic décor."
-                                }
-                            />
+                            </div>
+                            ))}
                         </div>
+                        ):(<p className="ml-[11%] mt-[2%]">No Upcoming Events Yet</p>)
+                    }
                     </TabPanel>
                     <TabPanel>
+                      {attendedEvents?.length ? (
                         <div className="mt-6 flex-wrap grid grid-cols-3 gap-8 flex">
+                          {attendedEvents?.map((event:any)=>(
+                          <div key={event.id}>
                             <Card
-                                image={"/images/event3.jpeg"}
-                                date={"25 of Dec, 2023"}
-                                ticketsNo={0}
-                                title={"Neon Groove"}
-                                description={
-                                    "Infuse vibrant neon colors, glow-in-the-dark elements, and energetic music for a lively and immersive experience."
-                                }
+                                image={event.event_image}
+                                date={formatDate(event.event_date)}
+                                ticketsNo={event.tickets_bought}
+                                title={event.title}
+                                description={event.description}
+                                id={event.id}
+                                event_details={event}
                             />
-                            <Card
-                                image={"/images/event1.jpeg"}
-                                date={"25 of Dec, 2023"}
-                                ticketsNo={0}
-                                title={"Expression Unveiled"}
-                                description={
-                                    "Celebrate diverse forms of artistic expression with unique installations, interactive exhibits, and expressive artwork."
-                                }
-                            />
-                            <Card
-                                image={"/images/event5.jpeg"}
-                                date={"25 of Dec, 2023"}
-                                ticketsNo={0}
-                                title={"Couture Elegance"}
-                                description={
-                                    "Showcase high-end fashion in a sophisticated setting with glamorous runway designs and chic décor."
-                                }
-                            />
+                            </div>
+                            ))}
                         </div>
+                        ):(<p className="ml-[11%] mt-[2%]">You have not attended any Events Yet</p>)
+                      }
                     </TabPanel>
                 </Tabs>
             </div>

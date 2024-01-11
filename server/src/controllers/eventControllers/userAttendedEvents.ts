@@ -15,7 +15,7 @@ export const userAttendedEvents = async (request: JwtPayload, response: Response
         }
         const pastEvent = await Event.findAll({
             where:{
-                event_start_date: {
+                event_date: {
                     [Op.lt]:new Date()
                 }
             }

@@ -80,6 +80,7 @@ const registerAdmin = async (request, response) => {
             isVerified: true,
             isBlocked: false,
             reports: [],
+            isAddAccount: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         });

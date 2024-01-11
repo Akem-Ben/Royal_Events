@@ -4,19 +4,23 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import { Props, Ticket } from "../components/Ticket";
 import { IoIosArrowRoundBack } from "react-icons/io";
-import React, { Key, useState } from "react";
+import React, { Key, useEffect, useState } from "react";
 import Modal from "../components/modal";
 import TicketsDropdown, { Tickets } from "../components/dropdownTickets";
 import Events from "../components/events";
 import { showErrorToast, showToast } from "../utility/toast";
 import { createEvent } from "../axiosSettings/events/eventAxios";
+import { useNavigate } from "react-router-dom";
 
 export const CreateEventPage = () => {
+  const [showModal3, setShowModal3] = useState(false);
   const user: any = localStorage.getItem("user");
   const mainUser = JSON.parse(user);
   //image state
   const [image, setImage] = useState<any | null>(null);
 
+  const navigate = useNavigate()
+  
   //for handling ticket type dropdown
   const [selectedTicket, setSelectedTicket] = useState<Tickets | null | any>(
     null
@@ -64,7 +68,32 @@ export const CreateEventPage = () => {
       console.log(err);
     }
   };
-
+  const showPrivacy = async() => {
+    try{
+      return setShowModal3(true)
+    }catch (err: any) {
+      console.log(err);
+    }
+  }
+  const rejectPrivacy = async()=> {
+    try{
+      navigate('/upcomingevents')
+      return setShowModal3(false)
+    }catch (err: any) {
+      console.log(err);
+    }
+  }
+  useEffect(()=>{
+    showPrivacy()
+  }, [])
+  const buttons3: any = [
+    {
+      label: "Accept and Proceed",
+      onClick: () => setShowModal3(false),
+      bg: "#27AE60", // Replace with your desired color
+      text: "#FFFFFF", // Replace with your desired color
+    },
+  ];
   //To handle the input field on the fticket modal
   const handleTicketChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -268,6 +297,7 @@ export const CreateEventPage = () => {
       setShowTicketInput(false);
       setShowImage("");
       setCreatedTickets(null);
+      navigate('/hostedevent')
       return setLoading(false);
     } catch (error: any) {
       if (error.response) {
@@ -562,6 +592,85 @@ export const CreateEventPage = () => {
             )}
           </form>
         </div>
+        {showModal3 && (
+        <Modal onClose={() => rejectPrivacy()} buttons={buttons3}>
+          <div className="text-center w-[90%] h-[500px] mt-[20px] mb-[20px] overflow-y-scroll">
+            <h1 className="text-[#27AE60]">Terms and Conditions</h1><br />
+            <div className="text-left">
+            <h5>1. Acceptance of Terms</h5>
+            <p>By using Royal Events, you agree to comply with and be bound by
+            these Terms and Conditions. If you do not agree to these terms,
+            please refrain from using the app.</p> 
+            <h5>2. User Accounts and Responsibilities</h5>
+            <p>2.1. Users must create an account to create or attend events. </p>
+            <p>2.2. Users are responsible for maintaining the
+            confidentiality of their account information.</p> 
+            <p>2.3. Users are solely
+            responsible for all activities that occur under their account.</p> 
+            <h5>3. Events and Payments</h5>
+            <p>3.1. Users can create events, manage event
+            details, and set ticket prices.</p> 
+            <p>3.2. All payments for events are
+            processed securely through [Payment Processor Name].</p> 
+            <p>3.3. Refunds
+            for event tickets are subject to the event organizer's refund
+            policy.</p> 
+            <h5>4. Content and Conduct</h5>
+            <p>4.1. Users are responsible for the
+            content they post and must comply with community guidelines.</p> 
+            <p>4.2. Royal Events reserves the right to remove or modify any content that
+            violates these terms.</p> 
+            <h5>5. Intellectual Property</h5> 
+            <p>5.1. Users retain ownership of the content they upload but grant Royal Events a
+            license to use, display, and distribute the content within the app.</p>
+            <h5>6. Limitation of Liability</h5> 
+            <p>6.1. Royal Events is not liable for any direct, indirect, incidental, special, or consequential damages
+            resulting from the use or inability to use the app.</p> 
+            <h5>7. Termination</h5>
+            <p>7.1. Royal Events reserves the right to terminate accounts or
+            restrict access for violation of these terms.</p> 
+            <h5>8. Changes to Terms</h5>
+            <p>8.1. Royal Events may modify or update these Terms and Conditions at
+            any time. Users will be notified of changes.</p> 
+            </div>
+            <h1 className="text-[#27AE60]">Privacy Statement</h1><br /> 
+            <div className="text-left">
+            <h5>1. Information Collection</h5> 
+            <p>1.1. Royal Events collects personal
+            information (name, email, payment details) necessary for event
+            creation and attendance.</p> 
+            <p>1.2. Usage data and analytics may be
+            collected to improve the app's performance and user experience.</p> 
+            <h5>2. Use of Information </h5>
+            <p>2.1. Personal information is used to facilitate
+            event management, payments, and communications between users and
+            event organizers.</p> 
+            <p>2.2. Royal Events does not sell or share personal
+            information with third parties for marketing purposes.</p> 
+            <h5>3. Security</h5>
+            <p>3.1. Royal Events implements industry-standard security measures to
+            protect user information.</p> 
+            <p>3.2. Users are responsible for maintaining
+            the security of their account login information.</p> 
+            <h5>4. Cookies</h5> 
+            <p>4.1. Royal Events uses cookies to enhance user experience. Users can
+            manage cookie preferences through their browser settings.</p> 
+            <h5>5. Third-Party Links</h5> 
+            <p>5.1. The app may contain links to third-party
+            websites. Royal Events is not responsible for the privacy practices
+            or content of these sites.</p> 
+            <h5>6. Data Retention</h5> 
+            <p>6.1. Royal Events
+            retains user data as long as necessary to provide services or as
+            required by law.</p> 
+            <h5>7. Contact Information</h5> 
+            <p>7.1. For any questions or
+            concerns regarding this Privacy Statement, contact
+            royal_events@gmail.com.</p>
+            </div>
+          </div>
+        </Modal>
+      )}
       </div>
     </>
   );

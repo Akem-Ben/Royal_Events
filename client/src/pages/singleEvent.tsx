@@ -32,6 +32,7 @@ function SingleEvent() {
   
     return `${formattedDay}/${formattedMonth}/${year}`;
   }
+  
   function formatDateTime(dateString: any) {
     const date = new Date(dateString);
 

@@ -77,6 +77,7 @@ export const registerUser = async (request: Request, response: Response) => {
       isVerified: false,
       isBlocked: false,
       reports: [],
+      isAddAccount: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

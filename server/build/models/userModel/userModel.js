@@ -57,6 +57,10 @@ User.init({
         type: sequelize_1.DataTypes.BOOLEAN,
         defaultValue: false,
     },
+    isAddAccount: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
     reports: {
         type: sequelize_1.DataTypes.JSON,
     },

@@ -1,5 +1,10 @@
 import { FaFlag } from "react-icons/fa6";
 import Button from "./Button";
+import { useEffect, useRef, useState } from "react";
+import Modal from "./modal";
+import Input from "./Input";
+import { showErrorToast, showSuccessToast } from "../utility/toast";
+import { reportEvent } from "../axiosSettings/events/eventAxios";
 
 interface Props {
   title: string;
@@ -8,8 +13,58 @@ interface Props {
   date: string;
   image: string;
 }
-
 function SingleEventHeader(props: Props) {
+  const[reportModal, setReportModal] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [report, setReport] = useState<any>("")
+  
+  const handleReportModal = async()=>{
+    return setReportModal(true)
+  }
+  const event_id = localStorage.getItem("event_id")
+  const handleReportChange = async(e:any)=>{
+    try{
+      let target = e.target.value
+      setReport({report: target})
+    }catch(error:any){
+      console.log(error)
+    }
+  }
+  const submitReport = async()=>{
+    try{
+      setLoading(true)
+      if(report.length === 0){
+        setLoading(false)
+        return showErrorToast("Input required")
+      }
+      const body = new FormData()
+      body.append("report", report)
+      const response = await reportEvent(event_id, report)
+      if(response.status !== "success"){
+        setLoading(false)
+        return showErrorToast(response.data.message)
+      }
+      showSuccessToast(response.message)
+      setReport("")
+      return setReportModal(false)
+    } catch (error: any) {
+      if (error.response) {
+        return showErrorToast(error.response.data.message);
+      } else if (error.request) {
+        return showErrorToast('Network Error. Please try again later.');
+      } else {
+        return showErrorToast('Error occurred. Please try again.');
+      }
+    }
+  }
+  const buttons:any = [
+    {
+      label: `${loading ? "Loading..." : "Submit"}`,
+      onClick: ()=> submitReport(),
+      bg: '#27AE60', // Replace with your desired color
+      text: '#FFFFFF', // Replace with your desired color
+    },
+  ]
   return (
     <div
       className="w-full h-[595px] bg-neutral-900 bg-opacity-30 bg-cover bg-center rounded-[10px]"
@@ -17,7 +72,7 @@ function SingleEventHeader(props: Props) {
     >
       <div className="flex px-20 text-white justify-end py-5">
         <div>
-          <a href="facebook.com" className="w-8 h-8">
+          <a href="#" className="w-8 h-8" onClick={handleReportModal}>
             <FaFlag className="text-green-500 w-full h-full p-2 bg-white rounded-full" />
           </a>
         </div>
@@ -62,6 +117,19 @@ function SingleEventHeader(props: Props) {
           </div>
         </div>
       </div>
+      {reportModal && (
+        <Modal onClose={() => setReportModal(false)} buttons={buttons}>
+          <div className="font-Inter w-[100%] h-[400px] text-center mb-[60px]">
+            <p className="font-Inter bold">Please Type your Report Below</p>
+            <textarea
+      className="h-[100%] w-[100%] resize-none border border-gray-300 p-2"
+      style={{ resize: 'none' }}
+      required
+      onChange={(e)=>handleReportChange(e)}
+    ></textarea>
+              </div>
+        </Modal>
+      )}
     </div>
   );
 }

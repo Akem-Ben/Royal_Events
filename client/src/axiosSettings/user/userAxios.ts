@@ -80,3 +80,30 @@ export const deleteProfileImage = async() => {
     return error.response
   }
 }
+
+export const addBankAccount = async(body:any) => {
+  try{
+    const response = await axios.post("/users/add_account", body)
+  return response.data
+  }catch(error:any){
+    return error.response
+  }
+}
+
+export const getBankAccount = async() => {
+  try{
+    const response = await axios.get("/users/get_user_account")
+  return response.data
+  }catch(error:any){
+    return error.response
+  }
+}
+
+export const editAccountDetails = async(body:any) => {
+  try{
+    const response = await axios.patch("/users/edit_account", body)
+  return response
+  }catch(error:any){
+    return error.response
+  }
+}

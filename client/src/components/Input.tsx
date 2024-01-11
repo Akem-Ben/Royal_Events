@@ -8,13 +8,15 @@ interface Props {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
-  disabled?: boolean
+  disabled?: boolean;
+  text?: string;
+  font?: string;
 }
 
 function Input(props: Props) {
   return (
     <div className="w-full h-[78px] items-start gap-[15px] self-stretch px-4 py-2 mb-4">
-      <label className="self-stretch text-black font-normal font-Inter mb-2.5 leading-none tracking-tight">
+      <label className={`self-stretch font-${props.font} text-${props.text}-50 font-normal font-Inter mb-2.5 leading-none tracking-tight`}>
         {props.title}
       </label>
       <div className="">

@@ -12,10 +12,11 @@ import search from "../assets/search.svg";
 import axios from "../configurations/httpSetup";
 import { useState } from "react";
 import {showToast, showErrorToast, showSuccessToast} from '../utility/toast'
+import Input from "../components/Input";
 
 export const LandingPage = () => {
 
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<any>({
     eventType: '',
     location: '',
     date: '',
@@ -100,16 +101,8 @@ export const LandingPage = () => {
                 onChange={(eventType) => setFilters({ ...filters, eventType })}
               />
             </div>
-            <div className="mb-4 md:mb-0 md:w-1/3 cursor-pointer">
-              <p className="text-gray-50 text-base font-normal font-Product mb-2">
-                Location
-              </p>
-              <Locations
-                placeholder={"Choose location"}
-                text={"text-green-500 text-xs"}
-                h={""}
-                onChange={(location) => setFilters({ ...filters, location })}
-              />
+            <div className="mb-4 text-bold md:mb-0 md:w-1/3">
+              <Input onChange={(location) => setFilters({ ...filters, location })} title={"Location"} font={"Product"} text={"gray"} placeholder={"Enter Location"} type={"text"} />
             </div>
             <div className="mb-4 md:mb-0 md:w-1/3">
               <p className="text-gray-50 text-base font-normal font-Product mb-2">
@@ -140,7 +133,7 @@ export const LandingPage = () => {
             </h2>
             <div className="w-16 h-1 bg-green-500"></div>
           </div>
-          <div className="flex flex-col md:flex-row gap-5 ">
+          {/* <div className="flex flex-col md:flex-row gap-5 ">
             <Events
               placeholder={"Any category"}
               text={"text-grey-500 text-xs"}
@@ -161,7 +154,7 @@ export const LandingPage = () => {
                 className="text-slate-500 text-xs font-normal font-Inter bg-gray-50"
               />
             </div>
-          </div>
+          </div> */}
         </div>
         <CardContainer filters={filters}/>
       </div>

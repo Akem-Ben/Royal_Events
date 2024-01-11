@@ -14,23 +14,26 @@ const userEvent = async (request, response) => {
                 message: "Contact Admin",
             });
         }
-        let getMyEvents = [];
-        const allEvents = (await eventModel_1.default.findAll({}));
-        allEvents.map((a) => {
-            a.organizers.map((b) => {
-                if (b.id_of_organizer === userId) {
-                    if (!getMyEvents.includes(a)) {
-                        getMyEvents.push(a);
-                    }
-                }
-            });
-        });
+        // let getMyEvents: any[] = [];
+        // const allEvents: any = (await Event.findAll(
+        //   {}
+        // )) as unknown as EventAttributes;
+        // allEvents.map((a: any) => {
+        //   a.organizers.map((b: any) => {
+        //     if (b.id_of_organizer === userId) {
+        //       if (!getMyEvents.includes(a)) {
+        //         getMyEvents.push(a);
+        //       }
+        //     }
+        //   });
+        // });
+        const getMyEvents = await eventModel_1.default.findAll({ where: { owner_id: userId } });
         if (getMyEvents.length !== 0) {
             return response.status(200).json({
                 status: "Success",
                 method: request.method,
                 message: `Events found successfully`,
-                data: getMyEvents,
+                getMyEvents,
             });
         }
         return response.status(404).json({

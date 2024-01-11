@@ -14,11 +14,12 @@ import {
 import Button from "../components/Button";
 import "./table.css";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { getSingleEvent, upComingEvents } from "../axiosSettings/events/eventAxios";
+import { useNavigate, useParams } from "react-router-dom";
+import { getEventComments, getSingleEvent, makeComments, organizerDeleteEvent, upComingEvents } from "../axiosSettings/events/eventAxios";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
+import Modal from "../components/modal";
 
-function SingleEventAdmin() {
+function SingleEventOrganizer() {
   const user:any = localStorage.getItem("user")
   const mainUser:any = JSON.parse(user)
   // const event_id = localStorage.getItem("event_id")
@@ -28,7 +29,10 @@ function SingleEventAdmin() {
   const [newComment, setNewComment] = useState("")
   const [loading, setLoading] = useState(false)
   const [upcomingEvents, setUpcomingEvents] = useState<any>([])
+  const [showModal, setShowModal] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false)
 
+  const navigate = useNavigate()
   function formatDate(dateString:any) {
     const date = new Date(dateString);
     const day = date.getDate();
@@ -61,31 +65,60 @@ function SingleEventAdmin() {
   const fetchData = async()=>{
     try{
       const response = await getSingleEvent(eventId)
-      console.log('data',response)
-      response.data.data.event_date = formatDate(response.data.data.event_date)
-      const test = response.data.data.comments
-      test.map((a:any)=> {
-        a.comment_time = formatDateTime(a.comment_time)
-      })
-      response.data.data.comments.length !== 0 ? setComments(test) : null
-      setEvent(response.data.data)
+      setEvent(response.data)
       return response.data.data
       }catch(error:any){
           console.log(error)
       }
   }
 
-  const fetchUpcomingEvents = async()=>{
+  const addComments = async(e:React.FormEvent<HTMLFormElement>)=>{
     try{
-      const response = await upComingEvents()
-     return setUpcomingEvents(response)
-    }catch(error:any){
-      console.log(error)
+      e.preventDefault()
+      setLoading(true)
+      const body = {
+        comments: newComment
+      }
+      const response = await makeComments(body, eventId)
+      console.log('add_comment',response)
+      if(response.status !== 'success'){
+        setLoading(false)
+        return showErrorToast(response.message)
+      }
+      showSuccessToast(response.message)
+      fetchEventComments()
+      fetchData()
+      setNewComment("")
+      localStorage.setItem("event", JSON.stringify(response.data))
+      return setLoading(false)
+    }catch (error: any) {
+      if (error.response) {
+        return showErrorToast(error.response.data.message);
+      } else if (error.request) {
+        return showErrorToast('Network Error. Please try again later.');
+      } else {
+        return showErrorToast('Error occurred. Please try again.');
+      }
+    }
+  }
+  
+  const fetchEventComments = async()=>{
+    try{
+      const response = await getEventComments(eventId)
+      setComments(response.mainComments)
+    }catch (error: any) {
+      if (error.response) {
+        return showErrorToast(error.response.data.message);
+      } else if (error.request) {
+        return showErrorToast('Network Error. Please try again later.');
+      } else {
+        return showErrorToast('Error occurred. Please try again.');
+      }
     }
   }
   useEffect(()=>{
       fetchData();
-      fetchUpcomingEvents();
+      fetchEventComments();
   }, [])
 
   const handleCommentChange = async(e:any)=>{
@@ -99,35 +132,38 @@ function SingleEventAdmin() {
     }
   }
 
-  // const addComments = async(e:React.FormEvent<HTMLFormElement>)=>{
-  //   e.preventDefault()
-  //   try{
-  //     setLoading(true)
-  //     const params = localStorage.getItem("event_id")
-  //     const body = {
-  //       comment: newComment
-  //     }
-  //     // const response = await makeComments(body, params)
-  //     if(response.status !== 200){
-  //       setLoading(false)
-  //       return showErrorToast(response.data.message)
-  //     }
-  //     fetchData()
-  //     setLoading(false)
-  //     showSuccessToast(response.data.message)
-  //     setNewComment("")
-  //   }catch (error: any) {
-  //     if (error.response) {
-  //       return showErrorToast(error.response.data.message);
-  //     }
-  //     if (error.request) {
-  //       return showErrorToast("Network Error");
-  //     }
-  //     if (error.message) {
-  //       return showErrorToast(error.message);
-  //     }
-  //   }
-  // }
+  const showDeleteModal = async() => {
+    try{
+      return setShowModal(true)
+    }catch(error:any){
+      console.log(error)
+    }
+  }
+   const handleEventDelete = async() => {
+    try{
+      setDeleteLoading(true)
+      const response = await organizerDeleteEvent(eventId)
+      if(response.status !== `success`){
+        setDeleteLoading(false)
+        showErrorToast(response.message)
+      }
+      showSuccessToast(response.message)
+      setDeleteLoading(false)
+      navigate("/hostedevent")
+      return setShowModal(false)
+    }catch(error:any){
+      console.log(error.messgae)
+    }
+  }
+  const buttons:any = [
+    {
+      label: `${deleteLoading ? "Loading..." : "Delete Event"}`,
+      onClick: ()=> handleEventDelete(),
+      bg: '#27AE60', // Replace with your desired color
+      text: '#FFFFFF', // Replace with your desired color
+    },
+  ]
+
   return (
     <div className="w-screen pb-5">
       <div className="fixed">
@@ -158,7 +194,7 @@ function SingleEventAdmin() {
           >
             <div className="flex px-20 text-white justify-end py-5">
               <div>
-                <a href="facebook.com" className="w-8 h-8">
+                <a href="#" className="w-8 h-8" onClick={showDeleteModal}>
                   <FaTrash className="text-red-500 w-full h-full p-2 bg-white rounded-full" />
                 </a>
               </div>
@@ -182,7 +218,7 @@ function SingleEventAdmin() {
                   Date & time
                 </div>
                 <div className="text-zinc-500 text-lg font-normal font-Inter pb-4">
-                {event.event_time}
+                {`${formatDate(event.event_date)} ${event.event_time}`}
                 </div>
 
                 <div className="text-green-500 text-base font-normal font-Inter pb-4">
@@ -210,6 +246,8 @@ function SingleEventAdmin() {
               </p>
             </div>
             <div className="w-5/12">
+              <div className="flex justify-between w-[70%]">
+                <div className="">
               <p className="pt-3 font-medium">Time</p>
               <p className="font-Inter">
                 {/* Weekdays hours:{" "} */}
@@ -217,6 +255,16 @@ function SingleEventAdmin() {
                 <br />
                 {/* Weekends hours: <span className="text-green-500">7PM- 8PM</span> */}
               </p>
+              </div>
+              <div>
+                <p className="pt-3 font-medium">Event Status</p>
+                <p className="font-Inter">
+                {/* Weekdays hours:{" "} */}
+                {event.isBlocked ? <span className="text-red-500">Blocked, Please <a className="text-red-500" href="mailto:admin@example.com?subject=Blocked&body=Please%20Contact%20Admin">Contact Admin</a></span> : <span className="text-green-500">Active</span>}
+                <br />
+              </p>
+              </div>
+              </div>
               <p className="text-black font-medium pt-3">Share with friends</p>
               <div>
                 <div className="w-32 h-8 md:w-96 flex gap-3">
@@ -243,17 +291,53 @@ function SingleEventAdmin() {
           <div className="text-gray-900 text-base font-medium leading-snug tracking-tight py-4">
             Comments
           </div>
-          <div className="py-3">
+          <div className="p-5 w-full bg-white rounded-lg shadow border border-gray-300 flex-col">
+            <div className="flex">
+              <img
+                src={mainUser.profile_picture?.length === 0
+                  ? "/images/event1.png"
+                  : mainUser.profile_picture}
+                alt="profile_pic"
+                className="w-8 h-8 relative rounded-[200px] border-2 border-gray-300"
+              />
+              <h3 className="text-black text-lg pl-2 font-semibold">
+              {mainUser.user_name}
+              </h3>
+            </div>
+            <hr />
+            <div className="w-full">
+              <form className="flex justify-between w-full" onSubmit={(e:any)=> addComments(e)}>
+                <div className="w-4/5">
+                  <input
+                    type="text"
+                    className="h-12 w-full border border-gray-500 px-2 font-Inter"
+                    required
+                    value={newComment}
+                    onChange={(e)=> handleCommentChange(e)}
+                  />
+                </div>
+                <div className="pl-2 w-1/5">
+                  <Button
+                    title={loading ? "Loading..." : "Comment"}
+                    text={"white"}
+                    bg={"green"}
+                    type={"submit"}
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+          <div className="py-3 bg-gray-100 p-[20px] h-[300px] overflow-y-scroll">
           {comments && comments.map((comment:any, index:any) => (
             <div key={index}>
               <div className="flex">
                 <img
-                  src={comment.user_image}
+                  src={comment.picture}
                   alt="profile_pic"
                   className="w-8 h-8 relative rounded-[200px] border-2 border-gray-300"
                 />
                 <h3 className="text-black text-lg pl-2 font-semibold">
-                {comment.user_name}
+                {comment.name}
                 </h3>
               </div>
               <p className="font-Inter">
@@ -266,11 +350,11 @@ function SingleEventAdmin() {
                 <a href="#" className="w-8 h-8">
                   <FaThumbsDown className="" />
                 </a>
-                <p>{comment.comment_time}</p>
+                <p>{formatDateTime(comment.comment_time)}</p>
               </div>
             </div>
              ))}
-             {comments.length === 0 && <p>No comments yet.</p>}
+             {!comments && <p>No comments yet.</p>}
           </div>
           <div className="w-full">
             <div className="text-gray-900 text-base text-center font-medium leading-snug tracking-tight py-4">
@@ -315,8 +399,15 @@ function SingleEventAdmin() {
           </div>
         </div>
       </div>
+      {showModal && (
+        <Modal onClose={() => setShowModal(false)} buttons={buttons}>
+          <p className="font-Inter text-center">
+          <span className="text-red-500">Are you sure you Want to delete this event?</span>
+              </p>
+        </Modal>
+      )}
     </div>
   );
 }
 
-export default SingleEventAdmin;
+export default SingleEventOrganizer;

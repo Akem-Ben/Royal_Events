@@ -86,6 +86,7 @@ const registerUser = async (request, response) => {
             isVerified: false,
             isBlocked: false,
             reports: [],
+            isAddAccount: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         });
