@@ -5,7 +5,7 @@ import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
-import { changeProfilePic, deleteProfileImage, fetchUserData, updateUserProfile } from "../axiosSettings/user/userAxios";
+import { changeProfilePic, deleteProfileImage, editUserProfile, fetchUserData, updateUserProfile } from "../axiosSettings/user/userAxios";
 import Modal from "../components/modal";
 
 const ProfilePage = () => {
@@ -17,7 +17,12 @@ const ProfilePage = () => {
   const [identityImage, setIdentityImage] = useState<any>("")
 
   const [snappedImage, setSnappedImage] = useState("")
-  const [newUser, setNewUser] = useState(initialUser)
+  const [newUser, setNewUser] = useState({
+    phone_number: '',
+    address: '',
+    state: '',
+    zip_code: '',
+  })
 
   const [takePictureLoading, setTakePictureLoading] = useState(false)
 
@@ -26,6 +31,26 @@ const ProfilePage = () => {
   const [showModal, setShowModal] = useState(false)
 
   const [savePictureLoading, setSavePictureLoading] = useState(false)
+
+  const [showEditModal, setShowEditModal] = useState(false)
+
+  const [editUser, setEditUser] = useState({
+    phone_number: '',
+    address: '',
+    state: '',
+    zip_code: '',
+  })
+
+  const [editLoading, setEditLoading] = useState(false)
+
+  const handleEditInputChange = async(e:any) => {
+    e.preventDefault()
+    const { name, value } = e.target;
+    setEditUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
 
   const handleInputChange = async(e:any) => {
     e.preventDefault()
@@ -68,7 +93,30 @@ const ProfilePage = () => {
       e.preventDefault()
       setLoading(true)
 
+      if(!mainUser.is_completed_profile){
+
       const myForm = new FormData()
+
+      if(!identityImage){
+        setLoading(false)
+        return showErrorToast("Please include upload an image of your NIN or Drivers License or Voters Card")
+      }
+      if(!newUser.phone_number){
+        setLoading(false)
+        return showErrorToast("Phone Number is required")
+      }
+      if(!newUser.address){
+        setLoading(false)
+        return showErrorToast("Your address is required")
+      }
+      if(!newUser.state){
+        setLoading(false)
+        return showErrorToast("Please input your state")
+      }
+      if(!newUser.zip_code){
+        setLoading(false)
+        return showErrorToast("zip code is required")
+      }
       myForm.append("identity_document", identityImage)
       myForm.append("phone_number", newUser.phone_number)
       myForm.append("address", newUser.address)
@@ -91,6 +139,10 @@ const ProfilePage = () => {
       setIdentityImage("")
       fetchUserDataz()
       return setLoading(false)
+    }else if(mainUser.is_completed_profile){
+      setLoading(false)
+      return setShowEditModal(true)
+    }
     }catch (error: any) {
       if (error.response) {
         return showErrorToast(error.response.data.message);
@@ -102,6 +154,83 @@ const ProfilePage = () => {
     }
   }
 
+  const editProfile = async() => {
+    try{
+      setEditLoading(true)
+
+      if(!editUser.phone_number && !editUser.address && !editUser.state && !editUser.zip_code){
+        setEditLoading(false)
+        return showErrorToast(`At least one field is required`)
+      }
+
+      if(editUser.phone_number !== ""){
+        if(editUser.phone_number.length < 11){
+        setEditLoading(false)
+        return showErrorToast(`Phone Number is invalid`)
+        }
+      }      
+      console.log(editUser)
+      const response = await editUserProfile(editUser)
+
+      if(response.data.status !== 'success'){
+        setEditLoading(false)
+        return showErrorToast(response.data.message)
+      }
+
+      showSuccessToast(response.data.message)
+
+      localStorage.setItem("user", JSON.stringify(response.data.user))
+
+      setEditUser({
+        phone_number: "",
+        address: "",
+        state: "",
+        zip_code: ""
+      })
+
+      fetchUserData()
+
+      setEditLoading(false)
+      console.log(response)
+
+      return setShowEditModal(false)
+    }catch (error: any) {
+      if (error.response) {
+        setEditLoading(false)
+        return showErrorToast(error.response.data.message);
+      } else if (error.request) {
+        setEditLoading(false)
+        return showErrorToast('Network Error. Please try again later.');
+      } else {
+        setEditLoading(false)
+        return showErrorToast('Error occurred. Please try again.');
+      }
+    }
+  }
+
+  const editButtons:any = [
+    {
+      label: `${editLoading ? "Loading..." : "Submit"}`,
+      onClick: () => editProfile(),
+      bg: '#27AE60',
+      text: '#FFFFFF',
+    },
+  ]
+
+  const closeEditModal = async()=>{
+    try{
+    setEditLoading(false)
+    setEditUser({
+      phone_number: "",
+      address: "",
+      state: "",
+      zip_code: ""
+    })
+    return setShowEditModal(false)
+    }catch(error:any){
+      console.log(error)
+    }
+  }
   
   const handleProfilePictureModal = async(e:any)=>{
     try{
@@ -378,7 +507,6 @@ const closeSnappedModal = async()=>{
               title={"PHONE NUMBER"}
               placeholder={initialUser.phone_number?.length === 0 ? "Enter your phone number" : initialUser.phone_number}
               type={"number"}
-              required
               value={newUser.phone_number}
               name={"phone_number"}
               onChange={handleInputChange}
@@ -387,7 +515,6 @@ const closeSnappedModal = async()=>{
               title={"ADDRESS"}
               placeholder={initialUser.address?.length === 0 ? "Enter your phone address" : initialUser.address}
               type={"text"}
-              required
               value={newUser.address}
               name={"address"}
               onChange={handleInputChange}
@@ -396,7 +523,6 @@ const closeSnappedModal = async()=>{
               title={"STATE"}
               placeholder={initialUser.state?.length === 0 ? "Enter your state of residence" : initialUser.state}
               type={"text"}
-              required
               value={newUser.state}
               name={"state"}
               onChange={handleInputChange}
@@ -405,7 +531,6 @@ const closeSnappedModal = async()=>{
               title={"ZIP CODE"}
               placeholder={initialUser.zip_code?.length === 0 ? "Enter your zip code" : initialUser.zip_code}
               type={"text"}
-              required
               value={newUser.zip_code}
               name={"zip_code"}
               onChange={handleInputChange}
@@ -414,18 +539,26 @@ const closeSnappedModal = async()=>{
               title={"IDENTITY DOCUMENT"}
               placeholder={""}
               type={"file"}
-              required
               value={identityImage.identity_document}
               name={"identity_document"}
               onChange={handleIdentityDocumentChange}
               disabled={initialUser.identity_document?.length !== 0}
             />
+        {!mainUser.is_completed_profile ? (
           <Button
           title={loading ? "Loading..." : "Save Changes"}
           text={"white"}
           bg={"#4caf50"}
           type={"submit"}
         />
+        ):(
+          <Button
+          title={loading ? "Loading..." : "Edit Profile"}
+          text={"white"}
+          bg={"#4caf50"}
+          type={"submit"}
+        />
+        )}
             </form>
           <div className="flex-col justify-center items-center gap-4 flex mt-4 sm:mt-8">
               <div className="w-[110%] flex justify-center h-[70%]">
@@ -501,6 +634,44 @@ const closeSnappedModal = async()=>{
           <div className="flex justify-center items-center mb-[10px]">
         <img src={snappedImage}/>
           </div>
+        </Modal>
+      )}
+
+{showEditModal && (
+        <Modal onClose={() => closeEditModal()} buttons={editButtons}>
+        <p>You can edit any of the following fields</p>
+        <Input
+              title={"PHONE NUMBER"}
+              placeholder={initialUser.phone_number?.length === 0 ? "Enter your phone number" : initialUser.phone_number}
+              type={"number"}
+              value={editUser.phone_number}
+              name={"phone_number"}
+              onChange={handleEditInputChange}
+            />
+            <Input
+              title={"ADDRESS"}
+              placeholder={initialUser.address?.length === 0 ? "Enter your phone address" : initialUser.address}
+              type={"text"}
+              value={editUser.address}
+              name={"address"}
+              onChange={handleEditInputChange}
+            />
+            <Input
+              title={"STATE"}
+              placeholder={initialUser.state?.length === 0 ? "Enter your state of residence" : initialUser.state}
+              type={"text"}
+              value={editUser.state}
+              name={"state"}
+              onChange={handleEditInputChange}
+            />
+            <Input
+              title={"ZIP CODE"}
+              placeholder={initialUser.zip_code?.length === 0 ? "Enter your zip code" : initialUser.zip_code}
+              type={"text"}
+              value={editUser.zip_code}
+              name={"zip_code"}
+              onChange={handleEditInputChange}
+            />
         </Modal>
       )}
       </div>

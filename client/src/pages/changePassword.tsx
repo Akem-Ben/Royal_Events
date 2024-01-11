@@ -49,7 +49,7 @@ export function ChangePassword() {
         confirm_password: ""
       })
       setLoading(false)
-      navigate("/upcomingevents")
+      navigate("/profile")
     }catch(error:any){
       console.log(error)
     }

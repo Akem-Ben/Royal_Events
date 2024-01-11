@@ -107,3 +107,12 @@ export const editAccountDetails = async(body:any) => {
     return error.response
   }
 }
+
+export const editUserProfile = async(body:any)=>{
+  try{
+      const response = await axios.patch("/users/edit_profile", body)
+      return response
+  }catch(error:any){
+      return error.response
+  }
+}

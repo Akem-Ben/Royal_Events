@@ -13,6 +13,7 @@ import { getUserProfile } from "../../controllers/userControllers/getUserProfile
 import { addAccount } from "../../controllers/accountControllers/createAccount";
 import { getUserBankAccount } from "../../controllers/accountControllers/getAccount";
 import { userEditAccount } from "../../controllers/accountControllers/editAccount";
+import { userEditProfile } from "../../controllers/userControllers/userEditProfile";
 
 const router = express.Router();
 
@@ -28,4 +29,6 @@ router.get("/get_profile", generalAuthoriser, getUserProfile)
 router.post("/add_account", generalAuthoriser, addAccount)
 router.get("/get_user_account", generalAuthoriser, getUserBankAccount)
 router.patch("/edit_account", generalAuthoriser, userEditAccount)
+router.patch("/edit_profile", generalAuthoriser, userEditProfile)
+
 export default router;

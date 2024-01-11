@@ -18,6 +18,7 @@ const getUserProfile_1 = require("../../controllers/userControllers/getUserProfi
 const createAccount_1 = require("../../controllers/accountControllers/createAccount");
 const getAccount_1 = require("../../controllers/accountControllers/getAccount");
 const editAccount_1 = require("../../controllers/accountControllers/editAccount");
+const userEditProfile_1 = require("../../controllers/userControllers/userEditProfile");
 const router = express_1.default.Router();
 router.post("/signup", userRegister_1.registerUser);
 router.post("/signin", userLogin_1.userLogin);
@@ -31,4 +32,5 @@ router.get("/get_profile", authorization_1.generalAuthoriser, getUserProfile_1.g
 router.post("/add_account", authorization_1.generalAuthoriser, createAccount_1.addAccount);
 router.get("/get_user_account", authorization_1.generalAuthoriser, getAccount_1.getUserBankAccount);
 router.patch("/edit_account", authorization_1.generalAuthoriser, editAccount_1.userEditAccount);
+router.patch("/edit_profile", authorization_1.generalAuthoriser, userEditProfile_1.userEditProfile);
 exports.default = router;
