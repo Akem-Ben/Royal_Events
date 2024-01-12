@@ -1,16 +1,15 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { useEffect, useState } from "react";
-import { addBankAccount, changePassword, editAccountDetails, getBankAccount } from "../axiosSettings/user/userAxios";
+import { addBankAccount, editAccountDetails, getBankAccount } from "../axiosSettings/user/userAxios";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
 import { CiBank } from "react-icons/ci";
 import Modal from "../components/modal";
 
 export function UserAccount() {
-  const navigate = useNavigate()
   const user:any = localStorage.getItem("user")
   const mainUser = JSON.parse(user)
   const [loading, setLoading] = useState(false)

@@ -11,8 +11,7 @@ import CardContainer from "../components/CardContainer";
 import search from "../assets/search.svg";
 import axios from "../configurations/httpSetup";
 import { useState } from "react";
-import {showToast, showErrorToast, showSuccessToast} from '../utility/toast'
-import Input from "../components/Input";
+import {showToast, showErrorToast} from '../utility/toast'
 
 export const LandingPage = () => {
 
@@ -101,8 +100,11 @@ export const LandingPage = () => {
                 onChange={(eventType) => setFilters({ ...filters, eventType })}
               />
             </div>
-            <div className="mb-4 text-bold md:mb-0 md:w-1/3">
-              <Input onChange={(location) => setFilters({ ...filters, location })} title={"Location"} font={"Product"} text={"gray"} placeholder={"Enter Location"} type={"text"} />
+            <div className="mb-4 md:mb-0 md:w-1/3">
+              <p className="text-gray-50 text-base font-normal font-Product mb-2">
+                Location
+              </p>
+              <input title={"Location"} placeholder={"Enter Location"} type={"text"} onChange={(location) => setFilters({ ...filters, location })} className="self-stretch h-[46px] focus:outline-none p-2.5 bg-gray-50 font-Inter rounded-[5px] border-b-2 border-green-500 items-center gap-2.5 w-full md:w-64" />
             </div>
             <div className="mb-4 md:mb-0 md:w-1/3">
               <p className="text-gray-50 text-base font-normal font-Product mb-2">

@@ -1,16 +1,15 @@
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Card from "../components/Cards";
-import { Key, useEffect, useState } from "react";
-import { showToast, showErrorToast } from "../utility/toast";
+import { useEffect, useState } from "react";
+import { showErrorToast } from "../utility/toast";
 import Events from "../components/events";
-import Locations from "../components/locations";
 import { upComingEvents } from "../axiosSettings/events/eventAxios";
 
 export const UpcomingEvents = () => {
   let user: any = localStorage.getItem("user");
   let newUser = JSON.parse(user);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<any>({
     eventType: "",
     location: "",
     date: "",
@@ -79,46 +78,34 @@ export const UpcomingEvents = () => {
       </div>
 
       <div className="pl-[160px] w-[1180px] mt-12 h-10 justify-between items-center inline-flex">
-        <div className="flex-col justify-start items-start gap-1.5 inline-flex">
+        <div className="flex-col justify-start items-start gap-5 inline-flex">
           <div className="text-green-500 text-2xl font-semibold font-['Inter']">
             Upcoming Events
           </div>
           <div className="w-[90px] h-[0px] border-2 border-green-500"></div>
         </div>
-        <div className="h-10 justify-center items-center flex">
-          <div className="h-10 px-4 py-2 rounded-[5px] justify-between items-center flex">
-            <div className="text-slate-500 text-xs font-normal font-['Inter'] leading-none tracking-tight">
-              <Events
-                placeholder={"Any category"}
-                text={"text-grey-500 text-xs"}
-                h={""}
-                onChange={(eventType) => setFilters({ ...filters, eventType })}
-              />
-            </div>
-            <div className="w-6 h-6 relative" />
-          </div>
-          <div className="h-10 px-4 py-2 rounded-[5px] justify-between items-center flex">
-            <div className="text-slate-500 text-xs font-normal font-['Inter'] leading-none tracking-tight">
-            <Locations
-              placeholder={"Choose location"}
-              text={"text-grey text-xs"}
-              h={""}
-              onChange={(location) => setFilters({ ...filters, location })}
-            />
-            </div>
-            <div className="w-6 h-6 relative" />
-          </div>
-          <div className="h-10 px-4 py-2 rounded-[5px] bg-gray-200 justify-between items-center flex">
-            <div className=" cursor-pointer text-slate-500 font-normal font-['Inter'] leading-none tracking-tight">
+        <div className="flex flex-col md:flex-row gap-3 ">
+          <Events
+            placeholder={"Any category"}
+            text={"text-grey-500 text-xs"}
+            h={""}
+            onChange={(eventType) => setFilters({ ...filters, eventType })}
+          />
+          <input
+            title={"Location"}
+            placeholder={"Enter Location"}
+            type={"text"}
+            onChange={(location) => setFilters({ ...filters, location })}
+            className="self-stretch h-[46px] focus:outline-none p-2.5 bg-gray-50 font-Inter rounded-[5px] border-b-2 border-green-500 items-center gap-2.5 w-full md:w-48"
+          />
+          <div className="h-10 px-4 py-2 bg-gray-50 rounded-[5px] justify-between items-center flex">
             <input
-                type="date"
-                name=""
-                id=""
-                className="text-green-500 bg-gray-200 w-[120px] h-[20px] text-[16px] font-normal font-Inter cursor-pointer"
-                onChange={handleDate}
-              />
-            </div>
-            <div className="w-6 h-6 relative" />
+              type="date"
+              name=""
+              id=""
+              className="text-slate-500 text-xs font-normal font-Inter bg-gray-50"
+              onChange={handleDate}
+            />
           </div>
         </div>
       </div>
