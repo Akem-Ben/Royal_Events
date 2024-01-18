@@ -67,7 +67,7 @@ updatedAt: {
 
 },{
     sequelize: database,
-    tableName: 'Comment'
+    tableName: 'Ticket'
 }
 )
 

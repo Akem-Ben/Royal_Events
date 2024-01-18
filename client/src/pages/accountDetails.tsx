@@ -8,6 +8,7 @@ import { addBankAccount, editAccountDetails, getBankAccount } from "../axiosSett
 import { showErrorToast, showSuccessToast } from "../utility/toast";
 import { CiBank } from "react-icons/ci";
 import Modal from "../components/modal";
+import Adminsidebar from "../components/adminSideBar";
 
 export function UserAccount() {
   const user:any = localStorage.getItem("user")
@@ -174,7 +175,7 @@ const buttons: any = [
   return (
     <>
       <div className="fixed left-0">
-        <Sidebar />
+      {mainUser.role === "Admin" ? <Adminsidebar /> : <Sidebar />} 
       </div>
       <div className="pl-20 pb-10">
         <Navbar name={mainUser.first_name} image={mainUser.profile_picture.length === 0

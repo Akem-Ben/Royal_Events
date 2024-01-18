@@ -8,7 +8,6 @@ const eventModel_1 = __importDefault(require("../../models/eventModel/eventModel
 const getSingleEvent = async (request, response) => {
     try {
         const eventId = request.params.id;
-        console.log(eventId);
         const eventInfo = await eventModel_1.default.findOne({ where: { id: eventId } });
         if (!eventId) {
             return response.status(400).json({

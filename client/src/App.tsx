@@ -15,6 +15,9 @@ import { ChangePassword } from "./pages/changePassword";
 import { CreateEventPage } from "./pages/createEvent";
 import { HostedEventPage } from "./pages/hostedEvents";
 import { UserAccount } from "./pages/accountDetails";
+import { AdminDashboard } from "./pages/admin/adminDashboard";
+import EarningHistory from "./pages/earnings";
+import SingleAdmin from "./pages/admin/adminSingle";
 
 function App() {
   return (
@@ -35,7 +38,10 @@ function App() {
           <Route path="/reg4event" element={<Reg4Event />} />
           <Route path="/changepass" element={<ChangePassword />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/ticketHistory" element={<TicketHistory />} />
+          <Route path="/earningHistory" element={<EarningHistory />} />
+          <Route path="/admin_single/:eventId" element={<SingleAdmin />} />
         </Routes>
       </main>
       <ToastContainer />

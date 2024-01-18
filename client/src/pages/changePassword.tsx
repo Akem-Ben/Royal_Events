@@ -7,6 +7,7 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { useState } from "react";
 import { changePassword } from "../axiosSettings/user/userAxios";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
+import Adminsidebar from "../components/adminSideBar";
 
 export function ChangePassword() {
   const navigate = useNavigate()
@@ -57,7 +58,7 @@ export function ChangePassword() {
   return (
     <>
       <div className="fixed left-0">
-        <Sidebar />
+      {mainUser.role === "Admin" ? <Adminsidebar /> : <Sidebar />} 
       </div>
       <div className="pl-20 pb-10">
         <Navbar name={mainUser.first_name} image={mainUser.profile_picture.length === 0

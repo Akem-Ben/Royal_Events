@@ -7,6 +7,7 @@ import Events from "../components/events";
 import { showErrorToast } from "../utility/toast";
 import { getUserAttendedEvents, getUserEvents, upComingEvents } from "../axiosSettings/events/eventAxios";
 import { useEffect, useState } from "react";
+import Adminsidebar from "../components/adminSideBar";
 
 export const HostedEventPage = () => {
     const user:any = localStorage.getItem("user")
@@ -122,7 +123,7 @@ export const HostedEventPage = () => {
     return (
         <>
         <div className="fixed left-0">
-            <Sidebar />
+        {newUser.role === "Admin" ? <Adminsidebar /> : <Sidebar />} 
         </div>
         <div className="pl-20 pb-10">
         <Navbar name={newUser.first_name} image={newUser.profile_picture.length === 0 ? "/images/event1.png" : newUser.profile_picture} />

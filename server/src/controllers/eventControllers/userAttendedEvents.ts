@@ -14,11 +14,11 @@ export const userAttendedEvents = async (request: JwtPayload, response: Response
             })
         }
         const pastEvent = await Event.findAll({
-            where:{
-                event_date: {
-                    [Op.lt]:new Date()
-                }
-            }
+            // where:{
+            //     event_date: {
+            //         [Op.lt]:new Date()
+            //     }
+            // }
         })
         for(let a = 0; a < pastEvent.length; a++){
             let event = pastEvent[a].registered_users

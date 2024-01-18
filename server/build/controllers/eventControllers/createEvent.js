@@ -38,8 +38,11 @@ const createEvents = async (request, response) => {
             ...request.body,
             id: eventId,
             owner_id: userId,
+            ticket_types: JSON.parse(request.body.ticket_types),
             tickets_bought: 0,
             likes: 0,
+            likesArr: [],
+            dislikesArr: [],
             event_image: request?.file?.path,
             isBlocked: false,
             organizers: organizers,
@@ -67,6 +70,7 @@ const createEvents = async (request, response) => {
         response.status(500).json({
             status: "error",
             message: "Event creation unsuccessful",
+            error: error.message
         });
     }
 };

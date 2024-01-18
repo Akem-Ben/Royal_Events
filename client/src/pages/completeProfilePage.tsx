@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
 import { changeProfilePic, deleteProfileImage, editUserProfile, fetchUserData, updateUserProfile } from "../axiosSettings/user/userAxios";
 import Modal from "../components/modal";
+import Adminsidebar from "../components/adminSideBar";
 
 const ProfilePage = () => {
   const user: any = localStorage.getItem("user");
@@ -436,7 +437,7 @@ const closeSnappedModal = async()=>{
   return (
     <>
       <div className="fixed left-0">
-        <Sidebar />
+      {mainUser.role === "Admin" ? <Adminsidebar /> : <Sidebar />} 
       </div>
       <div className="pl-4 sm:pl-20 pb-10">
       <Navbar name={mainUser.first_name} image={mainUser.profile_picture.length === 0

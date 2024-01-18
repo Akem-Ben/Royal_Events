@@ -59,6 +59,12 @@ Event.init({
     event_time: {
         type: sequelize_1.DataTypes.STRING
     },
+    likesArr: {
+        type: sequelize_1.DataTypes.JSON
+    },
+    dislikesArr: {
+        type: sequelize_1.DataTypes.JSON
+    },
     ticket_types: {
         type: sequelize_1.DataTypes.JSON,
         allowNull: false,

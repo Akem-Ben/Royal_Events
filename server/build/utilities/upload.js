@@ -28,7 +28,8 @@ exports.upload = (0, multer_1.default)({
         if (file.mimetype == "image/png" ||
             file.mimetype == "image/jpg" ||
             file.mimetype == "image/jpeg" ||
-            file.mimetype == "image/webp") {
+            file.mimetype == "image/webp" ||
+            file.mimetype == "image/avif") {
             cb(null, true);
         }
         else {

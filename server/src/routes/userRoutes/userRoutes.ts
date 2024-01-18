@@ -14,6 +14,9 @@ import { addAccount } from "../../controllers/accountControllers/createAccount";
 import { getUserBankAccount } from "../../controllers/accountControllers/getAccount";
 import { userEditAccount } from "../../controllers/accountControllers/editAccount";
 import { userEditProfile } from "../../controllers/userControllers/userEditProfile";
+import { userCheck } from "../../controllers/userControllers/checkUserDetails";
+import { getTicketHistory } from "../../controllers/userPayment/getTicketHistory";
+import { getUserEarnings } from "../../controllers/userPayment/getUserEarnings";
 
 const router = express.Router();
 
@@ -30,5 +33,8 @@ router.post("/add_account", generalAuthoriser, addAccount)
 router.get("/get_user_account", generalAuthoriser, getUserBankAccount)
 router.patch("/edit_account", generalAuthoriser, userEditAccount)
 router.patch("/edit_profile", generalAuthoriser, userEditProfile)
+router.post("/check", generalAuthoriser, userCheck)
+router.get("/tickets", generalAuthoriser, getTicketHistory)
+router.get("/earnings", generalAuthoriser, getUserEarnings)
 
 export default router;

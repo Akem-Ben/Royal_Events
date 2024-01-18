@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userAttendedEvents = void 0;
 const eventModel_1 = __importDefault(require("../../models/eventModel/eventModel"));
-const sequelize_1 = require("sequelize");
 const userAttendedEvents = async (request, response) => {
     try {
         const userId = request.user.id;
@@ -17,11 +16,11 @@ const userAttendedEvents = async (request, response) => {
             });
         }
         const pastEvent = await eventModel_1.default.findAll({
-            where: {
-                event_date: {
-                    [sequelize_1.Op.lt]: new Date()
-                }
-            }
+        // where:{
+        //     event_date: {
+        //         [Op.lt]:new Date()
+        //     }
+        // }
         });
         for (let a = 0; a < pastEvent.length; a++) {
             let event = pastEvent[a].registered_users;

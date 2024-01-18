@@ -6,15 +6,15 @@ const deleteEvent = async (request, response) => {
     try {
         const userId = request.user.id;
         const eventId = request.params.id;
-        const event = await eventModel_1.Event.findOne({ where: { id: eventId, owner_id: userId } });
+        const event = await eventModel_1.Event.findOne({ where: { id: eventId } });
         if (!event) {
             return response.status(404).json({
                 status: `error`,
                 message: `Event not found`
             });
         }
-        await eventModel_1.Event.destroy({ where: { id: eventId, owner_id: userId } });
-        const checkDestroy = await eventModel_1.Event.findOne({ where: { id: eventId, owner_id: userId } });
+        await eventModel_1.Event.destroy({ where: { id: eventId } });
+        const checkDestroy = await eventModel_1.Event.findOne({ where: { id: eventId } });
         if (checkDestroy) {
             return response.status(400).json({
                 status: `error`,

@@ -1,39 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import Locations from "../components/locations";
-import Events from "../components/events";
-import locations from "../components/locations";
+import { showErrorToast } from "../utility/toast";
+import { getTicketHistory } from "../axiosSettings/user/userAxios";
+import Adminsidebar from "../components/adminSideBar";
 
 const TicketHistory = () => {
   const user: any = localStorage.getItem("user");
   const mainUser = JSON.parse(user);
-  //image state
-  const [image, setImage] = useState<any | null>(null);
+  const[getTickets, setGetTickets] = useState<any>()
 
 
-  const [, setCategoryDropdownOpen] = useState(false);
-  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  function formatDateTime(dateString: any) {
+    const date = new Date(dateString);
 
-  const handleLocationClick = () => {
-    setLocationDropdownOpen(!locationDropdownOpen);
-    setCategoryDropdownOpen(false);
-  };
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
 
-  const handleLocationSelect = (location: any) => {
-    // Handle the selected location
-    console.log(`Selected location: ${location}`);
-    setLocationDropdownOpen(false);
-  };
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
 
-  function setFilters(_arg0: any) {
-    throw new Error("Function not implemented.");
+    const formattedDay = day < 10 ? `0${day}` : day;
+    const formattedMonth = month < 10 ? `0${month}` : month;
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+    return `${formattedDay}/${formattedMonth}/${year} ${formattedHours}:${formattedMinutes}`;
+}
+
+  const fetchTicketHistory = async()=>{
+    try{
+      const response = await getTicketHistory()
+     return setGetTickets(response.data.getAllTickets)
+    }catch (error: any) {
+      if (error.response) {
+        return showErrorToast(error.response.data.message);
+      } else if (error.request) {
+        return showErrorToast('Network Error. Please try again later.');
+      } else {
+        return showErrorToast('Error occurred. Please try again.');
+      }
+    }
   }
 
+  useEffect(()=>{
+    fetchTicketHistory()
+  },[])
   return (
     <>
       <div className="fixed left-0 z-30">
-        <Sidebar />
+      {mainUser.role === "Admin" ? <Adminsidebar /> : <Sidebar />} 
       </div>
       <div className="pl-20 fixed top-0 w-full z-10">
           <Navbar
@@ -54,49 +71,6 @@ const TicketHistory = () => {
             <div className="w-[200px] h-[0px] border-2 border-green-500"></div>
           </div>
           <div className="h-10 justify-center items-center gap-5 flex">
-            {/* Category Dropdown */}
-
-            <div>
-              <Events
-                placeholder={"Any Category"}
-                text={"text-green-100 text-xs"}
-                h={""}
-                onChange={(eventType: any) =>
-                  setFilters({ ...filters, eventType })
-                }
-              />
-            </div>
-
-            {/* Location Dropdown */}
-            <div className="relative">
-              <div
-                className="cursor-pointer"
-                onClick={handleLocationClick}
-              ></div>
-              <Locations
-                placeholder={"Choose location"}
-                text={"text-green-500 text-xs"}
-                h={""}
-                onChange={(location: any) =>
-                  setFilters({ ...filters, location })
-                }
-              />
-              {locationDropdownOpen && (
-                <div className="absolute top-12 left-0 bg-white border rounded shadow-md">
-                  <ul>
-                    {locations.map((location) => (
-                      <li
-                        key={location}
-                        className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-                        onClick={() => handleLocationSelect(location)}
-                      >
-                        {location}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
             <div className="h-10 px-4 py-2 bg-gray-50 rounded-[5px] justify-between items-center flex">
               <input
                 type="date"
@@ -114,40 +88,20 @@ const TicketHistory = () => {
             <th>EVENT CATEGORY</th>
             <th>ORDER DATE</th>
             <th>TICKET TYPE</th>
-            <th>TOTAL</th>
+            <th>QUANTITY</th>
+            <th>TOTAL COST</th>
           </tr>
-          <tr className="h-11 px-5 py-3 justify-start items-start gap-2.5 text-gray-800 text-sm font-medium font-Inter leading-tight tracking-tight">
-            <td>F711060151001</td>
-            <td>Neon Groove</td>
-            <td>Festival</td>
-            <td>25-12-2023</td>
-            <td>VVIP</td>
-            <td>₦ 20,000</td>
+          {getTickets ? (getTickets.map((tickets:any, index:any)=>(
+          <tr key={index} className="h-11 px-5 py-3 justify-start items-start gap-2.5 text-red-800 text-sm font-medium font-Inter leading-tight tracking-tight">
+            <td>{tickets.order_number}</td>
+            <td>{tickets.event_name}</td>
+            <td>{tickets.event_type}</td>
+            <td>{formatDateTime(tickets.createdAt)}</td>
+            <td>{tickets.ticket_type}</td>
+            <td>{tickets.quantity}</td>
+            <td>{tickets.total_cost}</td>
           </tr>
-          <tr className="h-11 px-5 py-3 justify-start items-start gap-2.5 text-gray-800 text-sm font-medium font-Inter leading-tight tracking-tight">
-            <td>F711060151001</td>
-            <td>Hollywood Glam</td>
-            <td>Premier</td>
-            <td>25-12-2023</td>
-            <td>VIP</td>
-            <td>₦ 20,000</td>
-          </tr>
-          <tr className="h-11 px-5 py-3 justify-start items-start gap-2.5 text-gray-800 text-sm font-medium font-['Inter'] leading-tight tracking-tight">
-            <td>F711060151001</td>
-            <td>FitFam</td>
-            <td>Fitness</td>
-            <td>25-12-2023</td>
-            <td>VVIP</td>
-            <td>₦ 20,000</td>
-          </tr>
-          <tr className="h-11 px-5 py-3 justify-start items-start gap-2.5 text-gray-800 text-sm font-medium font-['Inter'] leading-tight tracking-tight">
-            <td>F711060151001</td>
-            <td>Digital Realization</td>
-            <td>Seminar</td>
-            <td>25-12-2023</td>
-            <td>VIP</td>
-            <td> ₦ 20,000</td>
-          </tr>
+          ))):(<p>No Tickets Purchased</p>)}
         </table>
       </div>
     </>

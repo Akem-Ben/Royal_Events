@@ -116,3 +116,30 @@ export const editUserProfile = async(body:any)=>{
       return error.response
   }
 }
+
+export const checkUserPaymentDetails = async(body:any)=>{
+  try{
+      const response = await axios.post("/users/check", body)
+      return response
+  }catch(error:any){
+      return error.response
+  }
+}
+
+export const getTicketHistory = async()=>{
+  try{
+      const response = await axios.get("/users/tickets")
+      return response
+  }catch(error:any){
+      return error.response
+  }
+}
+
+export const getEarnings = async()=>{
+  try{
+      const response = await axios.get("/users/earnings")
+      return response
+  }catch(error:any){
+      return error.response
+  }
+}

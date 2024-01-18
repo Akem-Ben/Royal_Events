@@ -9,6 +9,7 @@ import { IoHomeOutline } from "react-icons/io5";
 import { showToast } from "../utility/toast";
 import { useState } from "react";
 import { Modal } from "../components/modal";
+import { GiMoneyStack } from "react-icons/gi";
 
 function Sidebar() {
   const [showModal, setShowModal] = useState(false);
@@ -29,15 +30,15 @@ function Sidebar() {
       if (mainUser.is_completed_profile === false) {
         return setShowModal(true);
       }
-      if (mainUser.profile_picture.length === 0) {
-        return setShowModal2(true);
-      }
+      // if (mainUser.profile_picture.length === 0) {
+      //   return setShowModal2(true);
+      // }
       if (mainUser.isBlocked) {
         return setShowModal3(true);
       }
-      if(!mainUser.isAddAccount){
-        return setShowModal4(true)
-      }
+      // if(!mainUser.isAddAccount){
+      //   return setShowModal4(true)
+      // }
      return navigate("/create_event")
     } catch (err: any) {
       console.log(err);
@@ -98,6 +99,11 @@ function Sidebar() {
           <button className="hover:bg-white hover:bg-opacity-10 py-2 px-2 hover:rounded-xl active:bg-white active:bg-opacity-10 active:rounded-xl">
             <Link to={"/ticketHistory"}>
               <IoTicketOutline className="text-white text-3xl" />
+            </Link>
+          </button>
+          <button className="hover:bg-white hover:bg-opacity-10 py-2 px-2 hover:rounded-xl active:bg-white active:bg-opacity-10 active:rounded-xl">
+            <Link to={"/earningHistory"}>
+              <GiMoneyStack className="text-white text-3xl" />
             </Link>
           </button>
           <button className="hover:bg-white hover:bg-opacity-10 py-2 px-2 hover:rounded-xl active:bg-white active:bg-opacity-10 active:rounded-xl">

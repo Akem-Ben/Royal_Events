@@ -6,15 +6,15 @@ export const deleteEvent = async(request:JwtPayload, response:Response) => {
     try{
         const userId = request.user.id
         const eventId = request.params.id
-        const event = await Event.findOne({where: {id:eventId, owner_id:userId}})
+        const event = await Event.findOne({where: {id:eventId}})
         if(!event){
             return response.status(404).json({
                 status: `error`,
                 message: `Event not found`
             })
         }
-        await Event.destroy({where: {id:eventId, owner_id:userId}})
-        const checkDestroy = await Event.findOne({where:{id:eventId, owner_id:userId}})
+        await Event.destroy({where: {id:eventId}})
+        const checkDestroy = await Event.findOne({where:{id:eventId}})
         if(checkDestroy){
             return response.status(400).json({
                 status: `error`,

@@ -4,7 +4,6 @@ import Event, { EventAttributes } from '../../models/eventModel/eventModel'
 export const getSingleEvent = async (request: Request, response: Response) => {
     try {
         const eventId = request.params.id
-console.log(eventId)
         const eventInfo = await Event.findOne({ where: { id: eventId } }) as unknown as EventAttributes;
 
         if (!eventId) {

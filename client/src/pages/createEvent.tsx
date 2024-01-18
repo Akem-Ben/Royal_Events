@@ -11,6 +11,8 @@ import Events from "../components/events";
 import { showErrorToast, showToast } from "../utility/toast";
 import { createEvent } from "../axiosSettings/events/eventAxios";
 import { useNavigate } from "react-router-dom";
+import TimeDropdown from "../components/TimeDropdown";
+import Adminsidebar from "../components/adminSideBar";
 
 export const CreateEventPage = () => {
   const [showModal3, setShowModal3] = useState(false);
@@ -70,7 +72,8 @@ export const CreateEventPage = () => {
   };
   const showPrivacy = async() => {
     try{
-      return setShowModal3(true)
+
+      mainUser.role === "User" ? setShowModal3(true) : null
     }catch (err: any) {
       console.log(err);
     }
@@ -172,6 +175,15 @@ export const CreateEventPage = () => {
   const eventsHandler = async (e: any) => {
     try {
       setFormData({ ...formData, type: e.name });
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
+  //selecting events time
+  const timeHandler = async (e: any) => {
+    try {
+      setFormData({ ...formData, event_time: e.target.value });
     } catch (error: any) {
       console.log(error);
     }
@@ -278,6 +290,11 @@ export const CreateEventPage = () => {
       newFormData.append("ticket_types", JSON.stringify(createdTickets));
 
       const response = await createEvent(newFormData);
+      console.log(response)
+      if (response.status === 500) {
+        setLoading(false);
+        return showErrorToast(response.statusText);
+      }
       if (response.status !== 200) {
         setLoading(false);
         return showErrorToast(response.data.message);
@@ -314,7 +331,7 @@ export const CreateEventPage = () => {
     <>
       <div>
         <div className="fixed left-0 z-20">
-          <Sidebar />
+         {mainUser.role === "Admin" ? <Adminsidebar /> : <Sidebar />} 
         </div>
         <div className="pl-20 fixed top-0 w-full z-10">
           <Navbar
@@ -458,7 +475,7 @@ export const CreateEventPage = () => {
 
             <div className="flex">
               <div className="w-[100%] flex font-normal font-Inter flex-col gap-[10px] mr-[20px] pl-[20px]">
-                <label>Event Type</label>
+                <label>EVENT TYPE</label>
                 <Events
                   placeholder="Select Event Type"
                   text=""
@@ -480,7 +497,7 @@ export const CreateEventPage = () => {
               />
             </div>
             <div className="flex">
-              <Input
+              {/* <Input
                 title={"EVENT TIME"}
                 placeholder={"8:00pm"}
                 type={"text"}
@@ -488,6 +505,14 @@ export const CreateEventPage = () => {
                 required
                 value={formData.event_time}
                 name="event_time"
+              /> */}
+              <TimeDropdown
+              name="event_time"
+              onChange={timeHandler}
+              placeholder="Select Event Time"
+              value={formData.event_time}
+              required
+              title="EVENT TIME"
               />
               <Input
                title={"EVENT DATE"}

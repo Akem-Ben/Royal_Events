@@ -46,8 +46,9 @@ export enum eventType {
 type event_registered_users = {
     id_of_user: string;
     name_of_user: string;
-    ticket_types: [];
+    email_of_user:string;
     no_of_tickets: number;
+    date_purchased: Date;
     total_amount_paid: number;
 }
 
@@ -67,6 +68,8 @@ export interface EventAttributes {
     tickets_bought: number;
     organizers?: organizer[];
     likes: number;
+    likesArr: [];
+    dislikesArr: [];
     isBlocked: boolean;
     registered_users: event_registered_users[]
     dislikes: number;
@@ -105,6 +108,12 @@ event_date: {
 },
 event_time: {
     type: DataTypes.STRING    
+  },
+  likesArr: {
+    type: DataTypes.JSON    
+  },
+  dislikesArr: {
+    type: DataTypes.JSON    
   },
 ticket_types: {
     type: DataTypes.JSON,

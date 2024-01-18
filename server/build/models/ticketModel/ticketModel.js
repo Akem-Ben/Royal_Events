@@ -51,6 +51,6 @@ Ticket.init({
     }
 }, {
     sequelize: index_1.database,
-    tableName: 'Comment'
+    tableName: 'Ticket'
 });
 exports.default = Ticket;

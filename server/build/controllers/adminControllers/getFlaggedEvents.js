@@ -5,29 +5,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFlaggedEvents = void 0;
 const eventModel_1 = __importDefault(require("../../models/eventModel/eventModel"));
+const reportModel_1 = __importDefault(require("../../models/reportModel/reportModel"));
 const getFlaggedEvents = async (request, response) => {
     try {
-        const getFlaggedEvents = await eventModel_1.default.findAll({
-            where: {
-                reports: {
-                    $not: {
-                        $eq: [],
-                    },
-                },
-            },
-            attributes: { exclude: ["createdAt", "updatedAt"] },
-        });
-        if (getFlaggedEvents.length === 0) {
+        const reportedEventsArray = await reportModel_1.default.findAll({});
+        if (reportedEventsArray.length === 0) {
             return response.status(404).json({
+                status: `error`,
                 message: `No Flagged Events`,
             });
         }
-        return response.status(200).json({
-            status: "Success",
-            method: request.method,
-            message: `Events found successfully`,
-            data: getFlaggedEvents,
-        });
+        const reportedEvents = [];
+        for (let i = 0; i < reportedEventsArray.length; i++) {
+            reportedEvents.push(await eventModel_1.default.findOne({ where: { id: reportedEventsArray[i].event_id } }));
+        }
+        if (reportedEvents.length > 0) {
+            return response.status(200).json({
+                status: "success",
+                method: request.method,
+                message: `Events found successfully`,
+                reportedEvents,
+            });
+        }
     }
     catch (error) {
         console.log(error.message);

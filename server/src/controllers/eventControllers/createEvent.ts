@@ -38,8 +38,11 @@ export const createEvents = async (request: JwtPayload, response: Response) => {
       ...request.body,
       id: eventId,
       owner_id: userId,
+      ticket_types: JSON.parse(request.body.ticket_types),
       tickets_bought: 0,
       likes: 0,
+      likesArr: [],
+      dislikesArr: [],
       event_image: request?.file?.path,
       isBlocked: false,
       organizers: organizers,
@@ -68,6 +71,7 @@ export const createEvents = async (request: JwtPayload, response: Response) => {
     response.status(500).json({
       status: "error",
       message: "Event creation unsuccessful",
+      error: error.message
     });
   }
 };

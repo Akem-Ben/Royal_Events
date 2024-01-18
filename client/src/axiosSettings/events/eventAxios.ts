@@ -82,3 +82,75 @@ export const organizerDeleteEvent = async(id:any)=>{
     return err.response
 }
 }
+
+export const payForEvent = async(body:any, id:any)=>{
+  try{
+      const response = await axios.post(`/events/payment/${id}`, body)
+      return response
+  }catch(error:any){
+      return error.response
+  }
+}
+
+export const paystack = async(body:any) => {
+  try{
+    const response = await axios.post(`paystack/pay`, body)
+    return response
+}catch(err:any){
+  return err.response
+}
+}
+
+export const userLikeEvent = async(id:any) => {
+  try{
+    const response = await axios.post(`events/like/${id}`)
+      return response;
+}catch(err:any){
+    return err.response
+}
+}
+
+export const userDislikeEvent = async(id:any) => {
+  try{
+    const response = await axios.post(`events/dislike/${id}`)
+      return response;
+}catch(err:any){
+    return err.response
+}
+}
+
+export const getFlaggedEvents = async()=>{
+  try{
+    const response = await axios.get(`/admin/flagged`)
+      return response;
+}catch(err:any){
+    return err.response
+}
+}
+
+export const adminBlockEvent = async(id:any) => {
+  try{
+    const response = await axios.post(`admin/block_event/${id}`)
+      return response;
+}catch(err:any){
+    return err.response
+}
+}
+
+export const adminUnblockEvent = async(id:any) => {
+  try{
+    const response = await axios.post(`admin/unblock_event/${id}`)
+      return response;
+}catch(err:any){
+    return err.response
+}
+}
+
+export const getReports = async(id:any)=>{
+  try{
+    const response = await axios.get(`/admin/get_reports/${id}`)
+      return response;
+}catch(err:any){
+    return err.response
+}
+}

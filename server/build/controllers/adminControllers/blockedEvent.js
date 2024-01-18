@@ -4,26 +4,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.eventBlocked = void 0;
-const authorization_1 = require("../../middleware/authorization");
 const eventModel_1 = __importDefault(require("../../models/eventModel/eventModel"));
 const eventBlocked = async (request, response, next) => {
     try {
-        const eventId = request.params.eventId;
+        const eventId = request.params.id;
         const event = await eventModel_1.default.findByPk(eventId);
         if (!event) {
             return response.status(404).json({ error: "Event not found" });
         }
-        if (event.isBlocked) {
-            return response.status(400).json({ error: "Event is already blocked" });
-        }
-        const adminAuthorise = authorization_1.adminAuthoriser;
-        if (!adminAuthorise) {
-            return response.status(402).json({
-                status: "error",
-                message: "User cannot block User",
-            });
-        }
-        await event.update({ isBlocked: true });
+        // if (event.isBlocked) {
+        //   return response.status(400).json({ error: "Event is already blocked" });
+        // }
+        await eventModel_1.default.update({ isBlocked: true }, { where: { id: eventId } });
         return response.status(200).json({
             message: "Event blocked successfully",
         });

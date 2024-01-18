@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.adminAuthoriser = exports.generalAuthoriser = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const userModel_1 = __importDefault(require("../models/userModel/userModel"));
 const generalAuthoriser = async (request, response, next) => {
     try {
         const authorization = request.headers.authorization;
@@ -47,7 +48,8 @@ const adminAuthoriser = async (request, response, next) => {
             });
         }
         const decode = jsonwebtoken_1.default.verify(mainToken, `${process.env.APP_SECRET}`);
-        if (decode.role !== 'Admin') {
+        const admin = await userModel_1.default.findOne({ where: { id: decode.id } });
+        if (admin.role !== 'Admin') {
             return response.status(400).json({
                 status: `error`,
                 message: `You are not allowed to access this resource. Contact the admin`

@@ -8,25 +8,14 @@ export const eventUnblocked = async (
   next: NextFunction
 ) => {
   try {
-    const eventId = request.params.eventId;
+    const eventId = request.params.id;
     const event = await Event.findByPk(eventId);
 
     if (!event) {
       return response.status(404).json({ error: "Event not found" });
     }
 
-    if (!event.isBlocked) {
-      return response.status(400).json({ error: "Event is not blocked" });
-    }
-
-    const adminAuthorise = adminAuthoriser;
-    if (!adminAuthorise) {
-      return response.status(402).json({
-        status: "error",
-        message: "User cannot unblock User",
-      });
-    }
-    await event.update({ isBlocked: false });
+    await Event.update({ isBlocked: false }, {where: {id:eventId}});
 
     return response.status(200).json({
       message: "Event unblocked successfully",

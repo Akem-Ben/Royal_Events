@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { showErrorToast } from "../utility/toast";
 import Events from "../components/events";
 import { upComingEvents } from "../axiosSettings/events/eventAxios";
+import Adminsidebar from "../components/adminSideBar";
 
 export const UpcomingEvents = () => {
   let user: any = localStorage.getItem("user");
@@ -63,7 +64,7 @@ export const UpcomingEvents = () => {
   return (
     <>
       <div className="fixed">
-        <Sidebar />
+      {newUser.role === "Admin" ? <Adminsidebar /> : <Sidebar />} 
       </div>
 
       <div className="pl-[100px]">

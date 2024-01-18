@@ -4,15 +4,44 @@ import { IoPricetags } from "react-icons/io5";
 import { GiTicket } from "react-icons/gi";
 import Button from "../components/Button";
 import Input from "../components/Input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatCurrency } from "../utility/currencyFormat";
-import TicketsDropdown, { Tickets } from "../components/dropdownTickets";
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
+import { showErrorToast, showSuccessToast } from "../utility/toast";
+import { getSingleEvent, payForEvent, paystack } from "../axiosSettings/events/eventAxios";
+import EventsTicketsDropdown from "../components/ticketForEventDropdown";
+import {Ticket} from '../components/ticketForEventDropdown'
+import { useNavigate } from "react-router-dom";
+import { checkUserPaymentDetails } from "../axiosSettings/user/userAxios";
+import Adminsidebar from "../components/adminSideBar";
 
 const Reg4Event = () => {
+  const user: any = localStorage.getItem("user");
+  const mainUser = JSON.parse(user);
+  const eventId = localStorage.getItem("event_id")
   const [counter, setCounter] = useState(0);
-  const [selectedTicket, setSelectedTicket] = useState<Tickets | any>(null);
-  const [cart, setCart] = useState<Tickets[]>([]);
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | any>(null);
+  const [cart, setCart] = useState<Ticket[]>([]);
+  const [event, setEvent] = useState<any>({})
+  const [loading, setLoading] = useState(false)
 
+  const [userDetails, setUserDetails] = useState({
+    email: "",
+    password: ""
+  })
+
+  const navigate = useNavigate()
+
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
+    const { name, value } = e.target;
+    setUserDetails({
+      ...userDetails,
+      [name]: value,
+      email: mainUser.email
+    })
+  }
   const incrementCounter = () => {
     setCounter(counter + 1);
   };
@@ -25,34 +54,35 @@ const Reg4Event = () => {
 
   const addToCart = () => {
     if (selectedTicket && counter > 0) {
-      const updatedCart = [...cart, { ...selectedTicket, quantity: counter }];
+      const updatedCart = [...cart, { ...selectedTicket, quantity: counter, total_amount: selectedTicket.ticket_amount * counter }];
       setCart(updatedCart);
       setCounter(0);
       setSelectedTicket(null);
     }
   };
 
-  const handleTicketSelect = (ticket: Tickets) => {
+  const handleTicketSelect = (ticket: Ticket) => {
     setSelectedTicket(ticket);
   };
 
   const calculateSubTotal = () => {
     return cart.reduce(
-      (total, item:any) => total + item.price * (item.quantity ?? 0),
+      (total, item:any) => total + item.ticket_amount * (item.quantity ?? 0),
       0
     );
   };
 
   const calculateTax = () => {
     const subTotal = calculateSubTotal();
-    const taxPercentage = 0.1; // 10% tax
+    const taxPercentage = 0.05; // 10% tax
     return subTotal * taxPercentage;
   };
 
   const calculateTotal = () => {
     const subTotal = calculateSubTotal();
     const tax = calculateTax();
-    return subTotal + tax;
+    let totals = subTotal + tax
+    return totals;
   };
 
   const handleDeleteCartItem = (index:any) => {
@@ -61,13 +91,99 @@ const Reg4Event = () => {
     setCart(updatedCart);
   };
 
-  const handlePaymentSubmit = (event:any) => {
+  const handlePaymentSubmit = async (event:any) => {
+    try{
     event.preventDefault();
-    console.log("Tickets Purchased Successfully");
+    setLoading(true)
+    if(cart.length === 0){
+      setLoading(false)
+      return showErrorToast("Please Select a Ticket")
+    }
+    if(userDetails.password.length === 0){
+      setLoading(false)
+      return showErrorToast("Please input your password")
+    }
+    setUserDetails({...userDetails, email: mainUser.email })
+    const checkUserDetails = await checkUserPaymentDetails(userDetails)
+    if(checkUserDetails.status !== 200){
+      setLoading(false)
+      return showErrorToast(checkUserDetails.data.message)
+    }
+    const total:any = calculateTotal();
+
+    const mainCart = new FormData()
+    mainCart.append("totalAmount", total)
+    mainCart.append("cart", JSON.stringify(cart))
+
+    const response = await payForEvent(mainCart, eventId)
+    if(response.status !== 200){
+      setLoading(false)
+      return showErrorToast(response.data.message)
+    }
+      localStorage.setItem("user_email", mainUser.email)
+      localStorage.setItem("amount", total.toString())
+
+      // const data = {
+      //   email: mainUser.email,
+      //   amount: total
+      // }
+      // const paystackResponse = await paystack(data)
+      // let url = paystackResponse.data.data.authorization_url
+      // window.location.href = url
+    setCounter(0)
+    setSelectedTicket(null)
+    setCart([])
+    setEvent({})
+    setLoading(false)
+    // return navigate("/ticketHistory")
+    } catch (error: any) {
+      if (error.response) {
+        return showErrorToast(error.response.data.message);
+      } else if (error.request) {
+        return showErrorToast('Network Error. Please try again later.');
+      } else {
+        return showErrorToast('Error occurred. Please try again.');
+      }
+    }
   };
 
+  const fetchEvent = async()=>{
+    try{
+      const response = await getSingleEvent(eventId)
+      setEvent(response.data)
+    } catch (error: any) {
+      if (error.response) {
+        return showErrorToast(error.response.data.message);
+      } else if (error.request) {
+        return showErrorToast('Network Error. Please try again later.');
+      } else {
+        return showErrorToast('Error occurred. Please try again.');
+      }
+    }
+  }
+
+  useEffect(()=>{
+    fetchEvent()
+  },[])
+
   return (
-    <div className="flex justify-center mt-10">
+    <>
+     <div>
+        <div className="fixed top-0 left-0 z-20">
+        {mainUser.role === "Admin" ? <Adminsidebar /> : <Sidebar />} 
+        </div>
+        <div className="pl-20 fixed top-0 w-full z-10">
+          <Navbar
+            name={mainUser.first_name}
+            image={
+              mainUser.profile_picture.length === 0
+                ? "/images/event1.png"
+                : mainUser.profile_picture
+            }
+          />
+        </div>
+      </div>
+    <div className="flex justify-center mt-[100px]">
       <div className="max-w-[982px] w-full md:h-[660px] p-4 md:p-8 bg-white rounded-2xl items-start md:gap-[100px] flex flex-col md:flex-row shadow">
         <div className="w-full md:w-[400px] flex-col justify-start items-start gap-2 mb-32 md:mb-auto">
           <h2 className="text-gray-900 text-base font-bold font-Inter">
@@ -75,17 +191,21 @@ const Reg4Event = () => {
           </h2>
           <Input
             title={"Email"}
-            placeholder={"Enter your mail"}
+            placeholder={mainUser.email}
             type={"email"}
+            disabled
           />
           <Input
             title={"Password"}
             placeholder={"Enter your password"}
             type={"password"}
+            value={userDetails.password}
+            onChange={handleInputChange}
+            name={"password"}
           />
-          <div className="w-full text-gray-900 text-base font-Inter">
-            <table className="w-full gap-5">
-              <tr className="font-bold">
+          <div className="w-full h-[300px] pl-[30px] text-gray-900 text-base font-Inter">
+            <table className="w-full pl-[100px] gap-5">
+              <tr className="font-bold flex justify-between w-[100%]">
                 <th>
                   <GiTicket className="text-green-500" />
                   Ticket
@@ -99,11 +219,12 @@ const Reg4Event = () => {
                   Action
                 </th>
               </tr>
+              <div className="h-[300px] bg-gray-200 overflow-y-scroll">
               {cart.map((cartItem:any, index) => (
-                <tr key={index}>
-                  <td>{cartItem.name}</td>
+                <tr key={index} className="font-bold flex justify-between w-[95%]">
+                  <td className="w-[15%]">{cartItem.ticket_type}</td>
                   <td>
-                    {formatCurrency(cartItem.price * (cartItem.quantity ?? 0))}
+                    {formatCurrency(Number(cartItem.ticket_amount) * (cartItem.quantity ?? 0))}
                   </td>
                   <td>
                     <button
@@ -115,6 +236,7 @@ const Reg4Event = () => {
                   </td>
                 </tr>
               ))}
+              </div>
             </table>
           </div>
         </div>
@@ -122,33 +244,33 @@ const Reg4Event = () => {
           <div className="self-stretch justify-between items-start inline-flex">
             <div className="flex-col justify-start items-start inline-flex">
               <p className="text-black text-xl font-medium font-Inter">
-                Buy Neon Party Ticket
+                Buy tickets for {event.title}
               </p>
               <p className="text-black text-2xl font-bold font-Inter">
                 {formatCurrency(
-                  selectedTicket ? selectedTicket.price * counter : 0
+                  selectedTicket ? Number(selectedTicket.ticket_amount) * counter : 0
                 )}
               </p>
             </div>
             <div className="justify-start items-center gap-6 flex">
               <button type="button" onClick={decrementCounter}>
-                <FaSquareMinus className="w-8 h-8 text-gray-100 hover:text-gray-300 rounded-md" />
+                <FaSquareMinus className="w-8 h-8 text-green-400 hover:text-gray-300 rounded-md" />
               </button>
               <span className="text-black text-l font-normal font-Inter leading-7">
                 {counter}
               </span>
               <button type="button" onClick={incrementCounter}>
-                <FaSquarePlus className="w-8 h-8 text-gray-100 hover:text-gray-300 rounded-md" />
+                <FaSquarePlus className="w-8 h-8 text-green-400 hover:text-gray-300 rounded-md" />
               </button>
             </div>
           </div>
-          <TicketsDropdown onTicketSelect={handleTicketSelect} />
+          <EventsTicketsDropdown tickets={event.ticket_types} onTicketSelect={handleTicketSelect} />
           <button
             type="submit"
             className="flex h-12 py-1 px-2 justify-center items-center flex-shrink-0 rounded font-Inter border-1 border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
             onClick={addToCart}
           >
-            Add to Cart
+            Add Ticket to Cart
           </button>
           <form className="w-full h-[78px] items-start gap-[15px] self-stretch px-4 py-2 mb-4">
             <label className="self-stretch text-black font-normal font-Inter mb-2.5 leading-none tracking-tight">
@@ -168,10 +290,9 @@ const Reg4Event = () => {
               />
             </div>
           </form>
-
           <form
             onSubmit={handlePaymentSubmit}
-            className="self-stretch flex-col justify-end items-end gap-2 flex"
+            className="self-stretch mt-2 flex-col justify-end items-end gap-2 flex"
           >
             <div className="self-stretch justify-start items-start inline-flex">
               <div className="text-gray-500 text-base font-normal font-['Inter']">
@@ -204,8 +325,9 @@ const Reg4Event = () => {
                 </span>
               </div>
             </div>
+            <br />
             <Button
-              title={"PAYMENTS"}
+              title={loading ? "LOADING..." : "PROCEED TO PAYMENT"}
               text={"white"}
               bg={"#4caf50"}
               type={"submit"}
@@ -214,6 +336,7 @@ const Reg4Event = () => {
         </div>
       </div>
     </div>
+</>
   );
 };
 

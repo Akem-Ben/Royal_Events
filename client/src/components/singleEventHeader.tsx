@@ -5,6 +5,7 @@ import Modal from "./modal";
 import Input from "./Input";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
 import { reportEvent } from "../axiosSettings/events/eventAxios";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   title: string;
@@ -17,6 +18,13 @@ function SingleEventHeader(props: Props) {
   const[reportModal, setReportModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [report, setReport] = useState<any>("")
+
+  const closeReportModal = ()=>{
+    setLoading(false)
+    return setReportModal(false)
+  }
+
+  const navigate = useNavigate()
   
   const handleReportModal = async()=>{
     return setReportModal(true)
@@ -26,6 +34,14 @@ function SingleEventHeader(props: Props) {
     try{
       let target = e.target.value
       setReport({report: target})
+    }catch(error:any){
+      console.log(error)
+    }
+  }
+
+  const navigateToPayment = async()=>{
+    try{
+    return navigate("/reg4event")
     }catch(error:any){
       console.log(error)
     }
@@ -40,19 +56,23 @@ function SingleEventHeader(props: Props) {
       const body = new FormData()
       body.append("report", report)
       const response = await reportEvent(event_id, report)
-      if(response.status !== "success"){
+      if(response.status === 500){
         setLoading(false)
-        return showErrorToast(response.data.message)
+        return showErrorToast("Text too long")
       }
       showSuccessToast(response.message)
       setReport("")
+      setLoading(false)
       return setReportModal(false)
     } catch (error: any) {
       if (error.response) {
+        setLoading(false)
         return showErrorToast(error.response.data.message);
       } else if (error.request) {
+        setLoading(false)
         return showErrorToast('Network Error. Please try again later.');
       } else {
+        setLoading(false)
         return showErrorToast('Error occurred. Please try again.');
       }
     }
@@ -110,6 +130,7 @@ function SingleEventHeader(props: Props) {
               text={"white"}
               bg={"green"}
               type={"button"}
+              onClick={navigateToPayment}
             />
           </div>
           <div className="text-center text-zinc-500 text-base font-normal font-['Inter']">
@@ -118,10 +139,11 @@ function SingleEventHeader(props: Props) {
         </div>
       </div>
       {reportModal && (
-        <Modal onClose={() => setReportModal(false)} buttons={buttons}>
-          <div className="font-Inter w-[100%] h-[400px] text-center mb-[60px]">
+        <Modal onClose={() => closeReportModal()} buttons={buttons}>
+          <div className="font-Inter w-[100%] h-[200px] text-center mb-[60px]">
             <p className="font-Inter bold">Please Type your Report Below</p>
             <textarea
+            placeholder="Not more than 20 words"
       className="h-[100%] w-[100%] resize-none border border-gray-300 p-2"
       style={{ resize: 'none' }}
       required

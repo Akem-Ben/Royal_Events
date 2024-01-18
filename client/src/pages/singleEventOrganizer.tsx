@@ -1,5 +1,6 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import { SlLike, SlDislike } from "react-icons/sl";
 import {
   FaArrowLeft,
   FaEnvelope,
@@ -15,9 +16,10 @@ import Button from "../components/Button";
 import "./table.css";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getEventComments, getSingleEvent, makeComments, organizerDeleteEvent, upComingEvents } from "../axiosSettings/events/eventAxios";
+import { getEventComments, getSingleEvent, makeComments, organizerDeleteEvent, upComingEvents, userDislikeEvent, userLikeEvent } from "../axiosSettings/events/eventAxios";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
 import Modal from "../components/modal";
+import Adminsidebar from "../components/adminSideBar";
 
 function SingleEventOrganizer() {
   const user:any = localStorage.getItem("user")
@@ -59,7 +61,7 @@ function SingleEventOrganizer() {
     const formattedHours = hours < 10 ? `0${hours}` : hours;
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
 
-    return `${formattedDay}/${formattedMonth}/${year} ${formattedHours}:${formattedMinutes}`;
+    return `${formattedDay}-${formattedMonth}-${year}; ${formattedHours}:${formattedMinutes}`;
 }
   const locate = localStorage.getItem("location")
   const fetchData = async()=>{
@@ -164,10 +166,48 @@ function SingleEventOrganizer() {
     },
   ]
 
+  const likeEventFunction = async()=>{
+    try{
+      const response = await userLikeEvent(eventId)
+      if(response.status !== 200){
+        return showErrorToast(response.data.message)
+      }
+      showSuccessToast(response.data.message)
+      return fetchData()
+    }catch (error: any) {
+      if (error.response) {
+        return showErrorToast(error.response.data.message);
+      } else if (error.request) {
+        return showErrorToast('Network Error. Please try again later.');
+      } else {
+        return showErrorToast('Error occurred. Please try again.');
+      }
+    }
+  }
+  
+  const dislikeEventFunction = async()=>{
+    try{
+      const response = await userDislikeEvent(eventId)
+      if(response.status !== 200){
+        return showErrorToast(response.data.message)
+      }
+      showSuccessToast(response.data.message)
+     return fetchData()
+    }catch (error: any) {
+      if (error.response) {
+        return showErrorToast(error.response.data.message);
+      } else if (error.request) {
+        return showErrorToast('Network Error. Please try again later.');
+      } else {
+        return showErrorToast('Error occurred. Please try again.');
+      }
+    }
+  }
+  
   return (
     <div className="w-screen pb-5">
       <div className="fixed">
-        <Sidebar />
+      {mainUser.role === "Admin" ? <Adminsidebar /> : <Sidebar />} 
       </div>
       <div className="pl-24">
         <div>
@@ -221,7 +261,7 @@ function SingleEventOrganizer() {
                 {`${formatDate(event.event_date)} ${event.event_time}`}
                 </div>
 
-                <div className="text-green-500 text-base font-normal font-Inter pb-4">
+                {/* <div className="text-green-500 text-base font-normal font-Inter pb-4">
                   Add to calendar
                 </div>
                 <div className="self-stretch gap-2.5 inline-flex pb-4">
@@ -231,7 +271,7 @@ function SingleEventOrganizer() {
                     bg={"green"}
                     type={"button"}
                   />
-                </div>
+                </div> */}
                 <div className="text-center text-zinc-500 text-base font-normal font-['Inter']">
                   No Refunds
                 </div>
@@ -265,6 +305,24 @@ function SingleEventOrganizer() {
               </p>
               </div>
               </div>
+              <div className="w-[300px] h-[100px] mt-2 flex justify-between">
+            <button 
+            onClick={likeEventFunction}
+            >
+              <span className="hover:text-green-800 text-green-500">
+              <SlLike className="w-[100px] h-[50px]" />
+              <span>{event.likesArr?.length === 1 ? <p>{event.likes} Like</p>:<p>{event.likes} likes</p>}</span>
+              </span>
+            </button>
+            <button 
+            onClick={dislikeEventFunction}
+            >
+              <span className="hover:text-red-800 text-red-500">
+              <SlDislike className="w-[100px] h-[50px]" />
+              <span>{event.dislikesArr?.length === 1 ? <p>{event.dislikes} dislike</p>:<p>{event.dislikes} dislikes</p>}</span>
+              </span>
+            </button>
+          </div>
               <p className="text-black font-medium pt-3">Share with friends</p>
               <div>
                 <div className="w-32 h-8 md:w-96 flex gap-3">
@@ -356,45 +414,38 @@ function SingleEventOrganizer() {
              ))}
              {!comments && <p>No comments yet.</p>}
           </div>
-          <div className="w-full">
+          <br />
+          <div className="w-full p-[20px] flex flex-col overflow-y-scroll items-center h-[300px] bg-gray-50">
             <div className="text-gray-900 text-base text-center font-medium leading-snug tracking-tight py-4">
               Purchased Tickets
             </div>
-            <table className="w-full text-gray-500 font-Inter text-xs">
+            <table className="w-full overflow-y-scroll text-gray-500 font-Inter text-xs">
               <thead className="w-full">
-                <td className="w-1/4">NAME</td>
-                <td className="w-1/4">EMAIL</td>
-                <td className="w-1/4">TICKET TYPE</td>
-                <td className="w-1/4">TOTAL</td>
+                <td className="w-1/4 text-gray-900 font-bold">NAME</td>
+                <td className="w-1/4 text-gray-900 font-bold">EMAIL</td>
+                <td className="w-1/4 text-gray-900 font-bold">DATE PURCHASED</td>
+                <td className="w-1/4 text-gray-900 font-bold">TOTAL TICKETS</td>
+                <td className="w-1/4 text-gray-900 font-bold">TOTAL AMOUNT</td>
               </thead>
+              <br />
+            {event.registered_users?.length > 0 ? (event.registered_users.map((user:any)=>(
               <tbody>
                 <tr className="table-style">
                   <td className="flex">
                     <img
-                      src="https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg"
+                      src={user.image_of_user}
                       alt="profile_pic"
                       className="w-7 h-7 relative rounded-[200px] border-2 border-gray-300"
                     />{" "}
-                    <p className="pl-3">John Doe</p>{" "}
+                    <p className="pl-3">{user.name_of_user}</p>{" "}
                   </td>
-                  <td>jd@gmail.com</td>
-                  <td>VIP</td>
-                  <td>1</td>
-                </tr>
-                <tr className="table-style">
-                  <td className="flex table-style">
-                    <img
-                      src="https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg"
-                      alt="profile_pic"
-                      className="w-7 h-7 relative rounded-[200px] border-2 border-gray-300"
-                    />{" "}
-                    <p className="pl-3">John Doe</p>{" "}
-                  </td>
-                  <td>jd@gmail.com</td>
-                  <td>VIP</td>
-                  <td>1</td>
+                  <td>{user.email_of_user}</td>
+                  <td>{formatDateTime(user.date_purchased)}</td>
+                  <td>{user.no_of_tickets}</td>
+                  <td>{user.total_amount_paid}</td>
                 </tr>
               </tbody>
+            ))):(<p>No Registered Users Yet</p>)}
             </table>
           </div>
         </div>

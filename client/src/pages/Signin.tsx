@@ -75,7 +75,7 @@ const handleResendLink = async()=>{
       localStorage.setItem("token", response.data.token)
       showSuccessToast(response.data.message)
       const user = response.data.user
-      user.role === "User" ? navigate("/upcomingevents") : null
+      user.role === "Admin" ? navigate("/admin") : navigate("/upcomingevents")
     }catch (error: any) {
       if (error.response) {
         // Server responded with a status code other than 2xx

@@ -19,6 +19,9 @@ const createAccount_1 = require("../../controllers/accountControllers/createAcco
 const getAccount_1 = require("../../controllers/accountControllers/getAccount");
 const editAccount_1 = require("../../controllers/accountControllers/editAccount");
 const userEditProfile_1 = require("../../controllers/userControllers/userEditProfile");
+const checkUserDetails_1 = require("../../controllers/userControllers/checkUserDetails");
+const getTicketHistory_1 = require("../../controllers/userPayment/getTicketHistory");
+const getUserEarnings_1 = require("../../controllers/userPayment/getUserEarnings");
 const router = express_1.default.Router();
 router.post("/signup", userRegister_1.registerUser);
 router.post("/signin", userLogin_1.userLogin);
@@ -33,4 +36,7 @@ router.post("/add_account", authorization_1.generalAuthoriser, createAccount_1.a
 router.get("/get_user_account", authorization_1.generalAuthoriser, getAccount_1.getUserBankAccount);
 router.patch("/edit_account", authorization_1.generalAuthoriser, editAccount_1.userEditAccount);
 router.patch("/edit_profile", authorization_1.generalAuthoriser, userEditProfile_1.userEditProfile);
+router.post("/check", authorization_1.generalAuthoriser, checkUserDetails_1.userCheck);
+router.get("/tickets", authorization_1.generalAuthoriser, getTicketHistory_1.getTicketHistory);
+router.get("/earnings", authorization_1.generalAuthoriser, getUserEarnings_1.getUserEarnings);
 exports.default = router;
