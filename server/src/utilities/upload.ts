@@ -16,7 +16,7 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: async(req, file)=>{
         return {
-            folder: "deca_events"
+            folder: "Royal_events"
         }
     }
 })

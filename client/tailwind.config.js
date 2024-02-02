@@ -9,7 +9,8 @@ export default {
       fontFamily:{
         'Holtwood':['Holtwood One SC', 'serif'],
         'Imperial':['Imperial Script', 'cursive'],
-        'Inter':['Inter', 'sans-serif']
+        'Inter':['Inter', 'sans-serif'],
+        'Oswald': ['Oswald', 'sans-serif']
       }
     },
   },

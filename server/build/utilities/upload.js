@@ -18,7 +18,7 @@ const storage = new multer_storage_cloudinary_1.CloudinaryStorage({
     cloudinary: cloudinary_1.v2,
     params: async (req, file) => {
         return {
-            folder: "deca_events"
+            folder: "Royal_events"
         };
     }
 });

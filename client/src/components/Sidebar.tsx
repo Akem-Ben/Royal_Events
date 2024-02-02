@@ -30,15 +30,15 @@ function Sidebar() {
       if (mainUser.is_completed_profile === false) {
         return setShowModal(true);
       }
-      // if (mainUser.profile_picture.length === 0) {
-      //   return setShowModal2(true);
-      // }
+      if (mainUser.profile_picture.length === 0) {
+        return setShowModal2(true);
+      }
       if (mainUser.isBlocked) {
         return setShowModal3(true);
       }
-      // if(!mainUser.isAddAccount){
-      //   return setShowModal4(true)
-      // }
+      if(!mainUser.isAddAccount){
+        return setShowModal4(true)
+      }
      return navigate("/create_event")
     } catch (err: any) {
       console.log(err);
