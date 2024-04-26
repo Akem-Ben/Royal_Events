@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { getEarnings } from "../axiosSettings/user/userAxios";
@@ -10,12 +10,12 @@ import Adminsidebar from "../components/adminSideBar";
 const EarningHistory = () => {
   const user: any = localStorage.getItem("user");
   const mainUser = JSON.parse(user);
-  const [getUserEarnings, setGetUserEarnings] = useState<any>()
+  const [getUserEarnings, setGetUserEarnings] = useState<any>();
 
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [showModal3, setShowModal3] = useState(false);
-  const [showModal4, setShowModal4] = useState(false)
+  const [showModal4, setShowModal4] = useState(false);
   const navigate = useNavigate();
 
   function formatDateTime(dateString: any) {
@@ -34,27 +34,26 @@ const EarningHistory = () => {
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
 
     return `${formattedDay}/${formattedMonth}/${year} ${formattedHours}:${formattedMinutes}`;
-}
+  }
 
-  const fetchEarningHistory = async()=>{
-    try{
-      const response = await getEarnings()
-      return setGetUserEarnings(response.data.getAllEarnings)
-    }catch (error: any) {
+  const fetchEarningHistory = async () => {
+    try {
+      const response = await getEarnings();
+      return setGetUserEarnings(response.data.getAllEarnings);
+    } catch (error: any) {
       if (error.response) {
         return showErrorToast(error.response.data.message);
       } else if (error.request) {
-        return showErrorToast('Network Error. Please try again later.');
+        return showErrorToast("Network Error. Please try again later.");
       } else {
-        return showErrorToast('Error occurred. Please try again.');
+        return showErrorToast("Error occurred. Please try again.");
       }
     }
-  }
+  };
 
-  useEffect(()=>{
-    fetchEarningHistory()
-  },[])
-
+  useEffect(() => {
+    fetchEarningHistory();
+  }, []);
 
   const buttons: any = [
     {
@@ -81,8 +80,7 @@ const EarningHistory = () => {
     },
   ];
 
-
-  const handleEventCreation = async (e: any) => {
+  const handleEventCreation = async () => {
     try {
       if (mainUser.is_completed_profile === false) {
         return setShowModal(true);
@@ -93,31 +91,30 @@ const EarningHistory = () => {
       if (mainUser.isBlocked) {
         return setShowModal3(true);
       }
-      if(!mainUser.isAddAccount){
-        return setShowModal4(true)
+      if (!mainUser.isAddAccount) {
+        return setShowModal4(true);
       }
-     return navigate("/create_event")
+      return navigate("/create_event");
     } catch (err: any) {
       console.log(err);
     }
   };
 
-
   return (
     <>
       <div className="fixed left-0 z-30">
-      {mainUser.role === "Admin" ? <Adminsidebar /> : <Sidebar />} 
+        {mainUser.role === "Admin" ? <Adminsidebar /> : <Sidebar />}
       </div>
       <div className="pl-20 fixed top-0 w-full z-10">
-          <Navbar
-            name={mainUser.first_name}
-            image={
-              mainUser.profile_picture.length === 0
-                ? "/images/event1.png"
-                : mainUser.profile_picture
-            }
-          />
-        </div>
+        <Navbar
+          name={mainUser.first_name}
+          image={
+            mainUser.profile_picture.length === 0
+              ? "/images/event1.png"
+              : mainUser.profile_picture
+          }
+        />
+      </div>
       <div className="w-full sm:w-[80%] h-auto sm:h-[678px] flex-col md:px-32 justify-start items-start gap-4 inline-flex mt-32">
         <div className="w-[1180px] justify-between items-center inline-flex">
           <div className="flex-col justify-start items-start gap-1.5 inline-flex">
@@ -148,47 +145,70 @@ const EarningHistory = () => {
             <th>TOTAL COST</th>
             <th>AMOUNT EARNED</th>
           </tr>
-          {getUserEarnings ? (getUserEarnings.map((earnings:any, index:any)=>(
-          <tr key={index} className="h-11 px-5 py-3 justify-start items-start gap-2.5 text-red-800 text-sm font-medium font-Inter leading-tight tracking-tight">
-            <td>{earnings.order_number}</td>
-            <td>{earnings.event_name}</td>
-            <td>{earnings.event_category}</td>
-            <td>{formatDateTime(earnings.createdAt)}</td>
-            <td>{earnings.ticket_type}</td>
-            <td>{earnings.ticket_quantity}</td>
-            <td>{earnings.total_amount}</td>
-            <td>{earnings.amount_earned}</td>
-          </tr>
-          ))):(<p className="mt-[15px]">No earnings yet click <a href="#" onClick={handleEventCreation}>here</a> to create an Event</p>)}
+          {getUserEarnings ? (
+            getUserEarnings.map((earnings: any, index: any) => (
+              <tr
+                key={index}
+                className="h-11 px-5 py-3 justify-start items-start gap-2.5 text-red-800 text-sm font-medium font-Inter leading-tight tracking-tight"
+              >
+                <td>{earnings.order_number}</td>
+                <td>{earnings.event_name}</td>
+                <td>{earnings.event_category}</td>
+                <td>{formatDateTime(earnings.createdAt)}</td>
+                <td>{earnings.ticket_type}</td>
+                <td>{earnings.ticket_quantity}</td>
+                <td>{earnings.total_amount}</td>
+                <td>{earnings.amount_earned}</td>
+              </tr>
+            ))
+          ) : (
+            <p className="mt-[15px]">
+              No earnings yet click{" "}
+              <a href="#" onClick={handleEventCreation}>
+                here
+              </a>{" "}
+              to create an Event
+            </p>
+          )}
         </table>
         {showModal && (
-        <Modal onClose={() => setShowModal(false)} buttons={buttons}>
-          <p className="text-center">
-            Only Users with completed profiles can create events. Please update your details, avatar and bank account details
-          </p>
-        </Modal>
-      )}
-      {showModal2 && (
-        <Modal onClose={() => setShowModal2(false)} buttons={buttons2}>
-          <p className="text-center">
-            Please update your avatar before you can create events
-          </p>
-        </Modal>
-      )}
-       {showModal3 && (
-        <Modal onClose={() => setShowModal3(false)}>
-          <p className="font-Inter text-center">
-          <span className="text-red-500">Your Account has been blocked, Please <a className="text-red-500" href="mailto:admin@example.com?subject=Blocked&body=Please%20Contact%20Admin">Click Here To Contact Admin</a></span>
-              </p>
-        </Modal>
-      )}
-      {showModal4 &&(
-         <Modal onClose={() => setShowModal4(false)} buttons={buttons3}>
-         <p className="text-center">
-           Please update your bank account details before you can create events. This is to enable you receive payments for event tickets
-         </p>
-       </Modal>
-      )}
+          <Modal onClose={() => setShowModal(false)} buttons={buttons}>
+            <p className="text-center">
+              Only Users with completed profiles can create events. Please
+              update your details, avatar and bank account details
+            </p>
+          </Modal>
+        )}
+        {showModal2 && (
+          <Modal onClose={() => setShowModal2(false)} buttons={buttons2}>
+            <p className="text-center">
+              Please update your avatar before you can create events
+            </p>
+          </Modal>
+        )}
+        {showModal3 && (
+          <Modal onClose={() => setShowModal3(false)}>
+            <p className="font-Inter text-center">
+              <span className="text-red-500">
+                Your Account has been blocked, Please{" "}
+                <a
+                  className="text-red-500"
+                  href="mailto:admin@example.com?subject=Blocked&body=Please%20Contact%20Admin"
+                >
+                  Click Here To Contact Admin
+                </a>
+              </span>
+            </p>
+          </Modal>
+        )}
+        {showModal4 && (
+          <Modal onClose={() => setShowModal4(false)} buttons={buttons3}>
+            <p className="text-center">
+              Please update your bank account details before you can create
+              events. This is to enable you receive payments for event tickets
+            </p>
+          </Modal>
+        )}
       </div>
     </>
   );

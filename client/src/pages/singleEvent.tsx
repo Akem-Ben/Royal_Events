@@ -7,7 +7,7 @@ import SingleEventBody from "../components/singleEventBody";
 import { FaArrowLeft, FaThumbsDown, FaThumbsUp } from "react-icons/fa6";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
 import { useParams } from "react-router-dom";
-import { makeComments, getEventComments, getSingleEvent, upComingEvents, userLikeEvent, userDislikeEvent } from "../axiosSettings/events/eventAxios";
+import { makeComments, getEventComments, getSingleEvent, upComingEvents } from "../axiosSettings/events/eventAxios";
 import { useEffect, useState } from "react";
 import Adminsidebar from "../components/adminSideBar";
 
@@ -142,35 +142,35 @@ const addComments = async(e:React.FormEvent<HTMLFormElement>)=>{
   }
 }
 
-const likeEventFunction = async()=>{
-  try{
-    console.log('liked')
-    // const response = await userLikeEvent(eventId)
-  }catch (error: any) {
-    if (error.response) {
-      return showErrorToast(error.response.data.message);
-    } else if (error.request) {
-      return showErrorToast('Network Error. Please try again later.');
-    } else {
-      return showErrorToast('Error occurred. Please try again.');
-    }
-  }
-}
+// const likeEventFunction = async()=>{
+//   try{
+//     console.log('liked')
+//     // const response = await userLikeEvent(eventId)
+//   }catch (error: any) {
+//     if (error.response) {
+//       return showErrorToast(error.response.data.message);
+//     } else if (error.request) {
+//       return showErrorToast('Network Error. Please try again later.');
+//     } else {
+//       return showErrorToast('Error occurred. Please try again.');
+//     }
+//   }
+// }
 
-const dislikeEventFunction = async()=>{
-  try{
-    console.log('disliked')
-    // const response = await userDislikeEvent(eventId)
-  }catch (error: any) {
-    if (error.response) {
-      return showErrorToast(error.response.data.message);
-    } else if (error.request) {
-      return showErrorToast('Network Error. Please try again later.');
-    } else {
-      return showErrorToast('Error occurred. Please try again.');
-    }
-  }
-}
+// const dislikeEventFunction = async()=>{
+//   try{
+//     console.log('disliked')
+//     // const response = await userDislikeEvent(eventId)
+//   }catch (error: any) {
+//     if (error.response) {
+//       return showErrorToast(error.response.data.message);
+//     } else if (error.request) {
+//       return showErrorToast('Network Error. Please try again later.');
+//     } else {
+//       return showErrorToast('Error occurred. Please try again.');
+//     }
+//   }
+// }
   return (
     <div className="w-screen">
       <div className="fixed">

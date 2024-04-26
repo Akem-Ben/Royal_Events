@@ -1,7 +1,6 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import Button from "./Button";
-import { useNavigate, redirect } from "react-router-dom";
 import { showErrorToast } from "../utility/toast";
 import Modal from "./modal";
 

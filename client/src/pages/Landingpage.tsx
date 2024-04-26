@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../index.css";
 import { FaLinkedin, FaInstagram, FaFacebookF } from "react-icons/fa6";
 import Events from "../components/events";
-import Locations from "../components/locations";
 import { Link } from "react-router-dom";
 import Button from "../components/Button";
 import CalendarInput from "../components/calender";

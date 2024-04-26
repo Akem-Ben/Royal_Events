@@ -25,7 +25,7 @@ function Adminsidebar() {
     return showToast(`Goodbye ${mainUser.first_name}`);
   };
 
-  const handleEventCreation = async (e: any) => {
+  const handleEventCreation = async () => {
     try {
       // if (mainUser.is_completed_profile === false) {
       //   return setShowModal(true);
@@ -86,7 +86,7 @@ function Adminsidebar() {
             </Link>
           </button>
           <button
-            onClick={(e: any) => handleEventCreation(e)}
+            onClick={() => handleEventCreation()}
             className="hover:bg-white hover:bg-opacity-10 py-2 px-2 hover:rounded-xl active:bg-white active:bg-opacity-10 active:rounded-xl"
           >
             <MdAddCircleOutline className="text-white text-3xl" />

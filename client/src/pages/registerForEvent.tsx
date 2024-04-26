@@ -8,11 +8,10 @@ import { useEffect, useState } from "react";
 import { formatCurrency } from "../utility/currencyFormat";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import { showErrorToast, showSuccessToast } from "../utility/toast";
-import { getSingleEvent, payForEvent, paystack } from "../axiosSettings/events/eventAxios";
+import { showErrorToast } from "../utility/toast";
+import { getSingleEvent, payForEvent } from "../axiosSettings/events/eventAxios";
 import EventsTicketsDropdown from "../components/ticketForEventDropdown";
 import {Ticket} from '../components/ticketForEventDropdown'
-import { useNavigate } from "react-router-dom";
 import { checkUserPaymentDetails } from "../axiosSettings/user/userAxios";
 import Adminsidebar from "../components/adminSideBar";
 
@@ -30,8 +29,6 @@ const Reg4Event = () => {
     email: "",
     password: ""
   })
-
-  const navigate = useNavigate()
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>)=>{

@@ -15,7 +15,7 @@ function Sidebar() {
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [showModal3, setShowModal3] = useState(false);
-  const [showModal4, setShowModal4] = useState(false)
+  const [showModal4, setShowModal4] = useState(false);
   const navigate = useNavigate();
   const user: any = localStorage.getItem("user");
   const mainUser = JSON.parse(user);
@@ -25,7 +25,7 @@ function Sidebar() {
     return showToast(`Goodbye ${mainUser.first_name}`);
   };
 
-  const handleEventCreation = async (e: any) => {
+  const handleEventCreation = async () => {
     try {
       if (mainUser.is_completed_profile === false) {
         return setShowModal(true);
@@ -36,10 +36,10 @@ function Sidebar() {
       if (mainUser.isBlocked) {
         return setShowModal3(true);
       }
-      if(!mainUser.isAddAccount){
-        return setShowModal4(true)
+      if (!mainUser.isAddAccount) {
+        return setShowModal4(true);
       }
-     return navigate("/create_event")
+      return navigate("/create_event");
     } catch (err: any) {
       console.log(err);
     }
@@ -86,7 +86,7 @@ function Sidebar() {
             </Link>
           </button>
           <button
-            onClick={(e: any) => handleEventCreation(e)}
+            onClick={() => handleEventCreation()}
             className="hover:bg-white hover:bg-opacity-10 py-2 px-2 hover:rounded-xl active:bg-white active:bg-opacity-10 active:rounded-xl"
           >
             <MdAddCircleOutline className="text-white text-3xl" />
@@ -123,7 +123,8 @@ function Sidebar() {
       {showModal && (
         <Modal onClose={() => setShowModal(false)} buttons={buttons}>
           <p className="text-center">
-            Only Users with completed profiles can create events. Please update your details, avatar and bank account details
+            Only Users with completed profiles can create events. Please update
+            your details, avatar and bank account details
           </p>
         </Modal>
       )}
@@ -134,19 +135,28 @@ function Sidebar() {
           </p>
         </Modal>
       )}
-       {showModal3 && (
+      {showModal3 && (
         <Modal onClose={() => setShowModal3(false)}>
           <p className="font-Inter text-center">
-          <span className="text-red-500">Your Account has been blocked, Please <a className="text-red-500" href="mailto:admin@example.com?subject=Blocked&body=Please%20Contact%20Admin">Click Here To Contact Admin</a></span>
-              </p>
+            <span className="text-red-500">
+              Your Account has been blocked, Please{" "}
+              <a
+                className="text-red-500"
+                href="mailto:admin@example.com?subject=Blocked&body=Please%20Contact%20Admin"
+              >
+                Click Here To Contact Admin
+              </a>
+            </span>
+          </p>
         </Modal>
       )}
-      {showModal4 &&(
-         <Modal onClose={() => setShowModal4(false)} buttons={buttons3}>
-         <p className="text-center">
-           Please update your bank account details before you can create events. This is to enable you receive payments for event tickets
-         </p>
-       </Modal>
+      {showModal4 && (
+        <Modal onClose={() => setShowModal4(false)} buttons={buttons3}>
+          <p className="text-center">
+            Please update your bank account details before you can create
+            events. This is to enable you receive payments for event tickets
+          </p>
+        </Modal>
       )}
     </div>
   );

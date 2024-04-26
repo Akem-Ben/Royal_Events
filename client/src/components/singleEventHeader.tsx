@@ -1,8 +1,7 @@
 import { FaFlag } from "react-icons/fa6";
 import Button from "./Button";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Modal from "./modal";
-import Input from "./Input";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
 import { reportEvent } from "../axiosSettings/events/eventAxios";
 import { useNavigate } from "react-router-dom";

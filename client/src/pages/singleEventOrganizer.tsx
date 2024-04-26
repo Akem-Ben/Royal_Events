@@ -16,7 +16,7 @@ import Button from "../components/Button";
 import "./table.css";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getEventComments, getSingleEvent, makeComments, organizerDeleteEvent, upComingEvents, userDislikeEvent, userLikeEvent } from "../axiosSettings/events/eventAxios";
+import { getEventComments, getSingleEvent, makeComments, organizerDeleteEvent, userDislikeEvent, userLikeEvent } from "../axiosSettings/events/eventAxios";
 import { showErrorToast, showSuccessToast } from "../utility/toast";
 import Modal from "../components/modal";
 import Adminsidebar from "../components/adminSideBar";
@@ -30,7 +30,7 @@ function SingleEventOrganizer() {
   const [comments, setComments] = useState<any>([])
   const [newComment, setNewComment] = useState("")
   const [loading, setLoading] = useState(false)
-  const [upcomingEvents, setUpcomingEvents] = useState<any>([])
+  // const [upcomingEvents, setUpcomingEvents] = useState<any>([])
   const [showModal, setShowModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false)
 
@@ -126,7 +126,6 @@ function SingleEventOrganizer() {
   const handleCommentChange = async(e:any)=>{
     try{
       e.preventDefault()
-      console.log('er',upcomingEvents)
       let target = e.target.value
       setNewComment(target)
     }catch(error:any){

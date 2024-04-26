@@ -29,11 +29,11 @@ function SingleAdmin() {
   const [comments, setComments] = useState<any>([])
   const [newComment, setNewComment] = useState("")
   const [loading, setLoading] = useState(false)
-  const [upcomingEvents, setUpcomingEvents] = useState<any>([])
+  // const [upcomingEvents, setUpcomingEvents] = useState<any>([])
   const [showModal, setShowModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [blockLoading, setBlockLoading] = useState(false)
-  const [reportLoading, setReportLoading] = useState(false)
+  // const [reportLoading, setReportLoading] = useState(false)
   const [showReportModal, setShowReportModal] = useState(false);
   const [reports, setReports] = useState<any>([])
 
@@ -126,7 +126,6 @@ function SingleAdmin() {
   const handleCommentChange = async(e:any)=>{
     try{
       e.preventDefault()
-      console.log('er',upcomingEvents)
       let target = e.target.value
       setNewComment(target)
     }catch(error:any){
@@ -161,8 +160,8 @@ function SingleAdmin() {
     {
       label: `${deleteLoading ? "Loading..." : "Delete Event"}`,
       onClick: ()=> handleEventDelete(),
-      bg: '#27AE60', // Replace with your desired color
-      text: '#FFFFFF', // Replace with your desired color
+      bg: '#27AE60',
+      text: '#FFFFFF',
     },
   ]
 
@@ -423,7 +422,7 @@ function SingleAdmin() {
                   />
                   }
                    <Button
-                    title={reportLoading ? "Loading..." : "View Reports"}
+                    title={"View Reports"}
                     text={"white"}
                     onClick={ViewReport}
                     bg={"green"}
