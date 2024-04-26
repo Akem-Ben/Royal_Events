@@ -9,7 +9,8 @@ import {database} from './configurations'
 import userRoutes from './routes/userRoutes/userRoutes'
 import eventRoutes from './routes/eventRoutes/eventRoutes'
 import paystackRoutes from "./routes/paystackRoutes/paystackRoute"
-import adminRoutes from "./routes/adminRoutes/adminRoutes"
+import adminRoutes from "./routes/adminRoutes/adminRoutes";
+import config from './configurations/config';
 
 
 const app = express()
@@ -39,8 +40,8 @@ database.sync({}).then( ()=>{
 })
 
 
-app.listen(process.env.PORT, ()=>{
-    console.log(`server running on port ${process.env.PORT}`)
+app.listen(config.PORT, ()=>{
+    console.log(`server running on port ${config.PORT}`)
 })
 
 export default app;
